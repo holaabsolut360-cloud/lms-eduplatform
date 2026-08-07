@@ -32,4 +32,10 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - `Admin\CursoController` / `ModuloController` / `LeccionController` — CRUD del panel de instructor
 - `Admin\OrdenController` — aprobar/rechazar comprobantes de pago
 
-**Pendiente:** vistas Blade (conectar con los mockups ya validados), autenticación (login/registro), y el `Gate` `administrar-plataforma` referenciado en las rutas de admin.
+**Autenticación y roles ✅:**
+- Tabla `users` con campo `rol` (`estudiante` / `instructor` / `administrador`) — plataforma single-tenant, sin tabla de academias
+- `LoginController` / `RegisterController` con las clases nativas de Laravel (`Auth`, `Hash`) — sin dependencias externas como Breeze
+- El registro público **siempre** crea cuentas de estudiante por seguridad; las cuentas de instructor/administrador solo las crea un administrador desde `Admin\UsuarioController`
+- `Gate::administrar-plataforma` (instructores y administradores acceden a `/admin`) y `Gate::gestionar-pagos` (solo administradores aprueban/rechazan órdenes) definidos en `AppServiceProvider`
+
+**Pendiente:** vistas Blade (conectar con los mockups ya validados), controladores de exámenes/tareas del lado alumno y admin, panel de "Apariencia".

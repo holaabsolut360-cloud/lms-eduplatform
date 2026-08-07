@@ -4,6 +4,9 @@ use App\Http\Controllers\Admin\CursoController;
 use App\Http\Controllers\Admin\LeccionController;
 use App\Http\Controllers\Admin\ModuloController;
 use App\Http\Controllers\Admin\OrdenController;
+use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Estudiante\TomarCursoController;
@@ -17,6 +20,20 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CatalogoController::class, 'home'])->name('publico.home');
 Route::get('/cursos', [CatalogoController::class, 'buscar'])->name('publico.catalogo');
 Route::get('/cursos/{curso:slug}', [CatalogoController::class, 'detalle'])->name('publico.curso.detalle');
+
+/*
+|--------------------------------------------------------------------------
+| Autenticación
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
+    Route::get('/ingresar', [LoginController::class, 'mostrar'])->name('login');
+    Route::post('/ingresar', [LoginController::class, 'iniciarSesion'])->name('login.attempt');
+    Route::get('/registro', [RegisterController::class, 'mostrar'])->name('registro');
+    Route::post('/registro', [RegisterController::class, 'registrar'])->name('registro.attempt');
+});
+
+Route::middleware('auth')->post('/salir', [LoginController::class, 'cerrarSesion'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -62,4 +79,10 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
     Route::get('pagos', [OrdenController::class, 'index'])->name('pagos.index');
     Route::post('pagos/{orden}/aprobar', [OrdenController::class, 'aprobar'])->name('pagos.aprobar');
     Route::post('pagos/{orden}/rechazar', [OrdenController::class, 'rechazar'])->name('pagos.rechazar');
+
+    // Solo administradores (verificado dentro del propio controlador) pueden
+    // crear cuentas de instructor/administrador.
+    Route::get('usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::post('usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+    Route::post('usuarios/{usuario}/desactivar', [UsuarioController::class, 'desactivar'])->name('usuarios.desactivar');
 });
