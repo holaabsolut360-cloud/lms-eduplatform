@@ -19,8 +19,8 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 3. **Reproductor y progreso del alumno** — vista "tomar curso", bloqueo secuencial
 4. **Exámenes y tareas** ✅ (calificación automática de exámenes, entrega/calificación manual de tareas)
 5. **Ventas y pagos** ✅ (Yape/Plin/cuenta bancaria en PEN/USD, aprobación manual de comprobante → activa matrícula automáticamente)
-6. **Certificados y despliegue en Banahosting**
+6. **Certificados** ✅ (emisión automática al completar 100% del curso) **y despliegue en Banahosting** (pendiente)
 
 ## Estado actual
 
-En construcción — Fase 1-2, 4 y 5 completas a nivel de estructura de datos (migraciones + modelos Eloquent). Faltan controladores, vistas Blade, la Fase 3 (reproductor/progreso) y la Fase 6.
+**Esquema de datos completo** (migraciones + modelos Eloquent, todas las fases 1-2 y 4-6). Siguiente paso: controladores, rutas y vistas Blade para que el proyecto sea ejecutable (Fase 3 incluida, ya que depende de los controladores de progreso).
