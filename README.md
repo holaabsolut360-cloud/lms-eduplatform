@@ -16,11 +16,20 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 
 1. **Base del proyecto** — estructura Laravel, limpieza de lógica multi-tenant heredada de proyectos anteriores
 2. **Contenido del curso** — módulos y lecciones ✅
-3. **Reproductor y progreso del alumno** — vista "tomar curso", bloqueo secuencial
+3. **Reproductor y progreso del alumno** — vista "tomar curso", bloqueo secuencial ✅ (controlador y lógica; falta vista Blade)
 4. **Exámenes y tareas** ✅ (calificación automática de exámenes, entrega/calificación manual de tareas)
-5. **Ventas y pagos** ✅ (Yape/Plin/cuenta bancaria en PEN/USD, aprobación manual de comprobante → activa matrícula automáticamente)
+5. **Ventas y pagos** ✅ (Yape/Plin/cuenta bancaria en PEN/USD, checkout + aprobación manual → activa matrícula automáticamente)
 6. **Certificados** ✅ (emisión automática al completar 100% del curso) **y despliegue en Banahosting** (pendiente)
 
 ## Estado actual
 
-**Esquema de datos completo** (migraciones + modelos Eloquent, todas las fases 1-2 y 4-6). Siguiente paso: controladores, rutas y vistas Blade para que el proyecto sea ejecutable (Fase 3 incluida, ya que depende de los controladores de progreso).
+**Esquema de datos completo** (14 migraciones + 15 modelos Eloquent).
+
+**Controladores y rutas ya conectados:**
+- `CatalogoController` — home público, búsqueda, detalle de curso
+- `CheckoutController` — checkout con selección de método de pago y subida de comprobante
+- `Estudiante\TomarCursoController` — reproductor de curso, con la lógica de **bloqueo secuencial configurable por curso y por alumno** ya implementada (`leccionDesbloqueada()`), cálculo de avance y disparo automático de emisión de certificado al llegar a 100%
+- `Admin\CursoController` / `ModuloController` / `LeccionController` — CRUD del panel de instructor
+- `Admin\OrdenController` — aprobar/rechazar comprobantes de pago
+
+**Pendiente:** vistas Blade (conectar con los mockups ya validados), autenticación (login/registro), y el `Gate` `administrar-plataforma` referenciado en las rutas de admin.
