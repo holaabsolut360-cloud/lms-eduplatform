@@ -15,12 +15,12 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 ## Roadmap de fases
 
 1. **Base del proyecto** — estructura Laravel, limpieza de lógica multi-tenant heredada de proyectos anteriores
-2. **Contenido del curso** — módulos y lecciones (✅ migraciones y modelos iniciales en este commit)
+2. **Contenido del curso** — módulos y lecciones ✅
 3. **Reproductor y progreso del alumno** — vista "tomar curso", bloqueo secuencial
-4. **Exámenes y tareas**
+4. **Exámenes y tareas** ✅ (calificación automática de exámenes, entrega/calificación manual de tareas)
 5. **Ventas y pagos** — checkout, Yape/Plin/cuenta bancaria
 6. **Certificados y despliegue en Banahosting**
 
 ## Estado actual
 
-En construcción — Fase 1-2 (estructura de datos base: categorías, cursos, módulos, lecciones, matrículas, progreso, configuración de apariencia).
+En construcción — Fase 1-2 y Fase 4 completas a nivel de estructura de datos (migraciones + modelos Eloquent). Faltan controladores, vistas Blade y la Fase 3 (reproductor/progreso) y Fase 5-6.
