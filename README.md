@@ -38,4 +38,11 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - El registro público **siempre** crea cuentas de estudiante por seguridad; las cuentas de instructor/administrador solo las crea un administrador desde `Admin\UsuarioController`
 - `Gate::administrar-plataforma` (instructores y administradores acceden a `/admin`) y `Gate::gestionar-pagos` (solo administradores aprueban/rechazan órdenes) definidos en `AppServiceProvider`
 
-**Pendiente:** vistas Blade (conectar con los mockups ya validados), controladores de exámenes/tareas del lado alumno y admin, panel de "Apariencia".
+**Pendiente:** vistas Blade (conectar con los mockups ya validados) — es lo único que falta para que el proyecto sea 100% ejecutable de punta a punta.
+
+**Exámenes, tareas y apariencia ✅:**
+- `Estudiante\ExamenController` — rinde examen, calificación automática vía `IntentoExamen::calificar()`, respeta `intentos_permitidos`
+- `Estudiante\TareaController` — entrega de tarea (archivo y/o comentario), bloqueada si `fecha_limite` ya pasó
+- `Admin\ExamenController` + `Admin\PreguntaController` — crear examen y agregar preguntas con sus opciones (o respuesta esperada si es de respuesta corta)
+- `Admin\TareaController` — crear tarea, listar entregas de todos los alumnos, calificar con nota + feedback
+- `Admin\AparienciaController` — conecta el panel de "Apariencia" (hero, color de marca, cifras, cursos destacados con orden) con `ConfiguracionApariencia`, tal como se diseñó en el mockup

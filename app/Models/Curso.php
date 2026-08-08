@@ -44,6 +44,16 @@ class Curso extends Model
         return $this->hasMany(Matricula::class);
     }
 
+    public function examenes(): HasMany
+    {
+        return $this->hasMany(Examen::class);
+    }
+
+    public function tareas(): HasMany
+    {
+        return $this->hasMany(Tarea::class);
+    }
+
     public function totalLecciones(): int
     {
         return $this->modulos->sum(fn ($m) => $m->lecciones->count());

@@ -1,14 +1,20 @@
 <?php
 
+use App\Http\Controllers\Admin\AparienciaController;
 use App\Http\Controllers\Admin\CursoController;
+use App\Http\Controllers\Admin\ExamenController as AdminExamenController;
 use App\Http\Controllers\Admin\LeccionController;
 use App\Http\Controllers\Admin\ModuloController;
 use App\Http\Controllers\Admin\OrdenController;
+use App\Http\Controllers\Admin\PreguntaController;
+use App\Http\Controllers\Admin\TareaController as AdminTareaController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Estudiante\ExamenController as EstudianteExamenController;
+use App\Http\Controllers\Estudiante\TareaController as EstudianteTareaController;
 use App\Http\Controllers\Estudiante\TomarCursoController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,13 +54,20 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Panel del estudiante (tomar curso)
+| Panel del estudiante (tomar curso, examenes, tareas)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->prefix('mis-cursos')->name('estudiante.')->group(function () {
     Route::get('/{curso:slug}', [TomarCursoController::class, 'index'])->name('curso.index');
     Route::get('/{curso:slug}/leccion/{leccion}', [TomarCursoController::class, 'verLeccion'])->name('curso.leccion');
     Route::post('/{curso:slug}/leccion/{leccion}/completar', [TomarCursoController::class, 'marcarCompletada'])->name('curso.completar');
+
+    Route::get('/{curso:slug}/examen/{examen}', [EstudianteExamenController::class, 'mostrar'])->name('examen.mostrar');
+    Route::post('/{curso:slug}/examen/{examen}', [EstudianteExamenController::class, 'enviar'])->name('examen.enviar');
+    Route::get('/{curso:slug}/examen/{examen}/resultado/{intento}', [EstudianteExamenController::class, 'resultado'])->name('examen.resultado');
+
+    Route::get('/{curso:slug}/tarea/{tarea}', [EstudianteTareaController::class, 'mostrar'])->name('tarea.mostrar');
+    Route::post('/{curso:slug}/tarea/{tarea}', [EstudianteTareaController::class, 'entregar'])->name('tarea.entregar');
 });
 
 /*
@@ -76,12 +89,24 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
     Route::put('modulos/{modulo}/lecciones/{leccion}', [LeccionController::class, 'update'])->name('lecciones.update');
     Route::delete('modulos/{modulo}/lecciones/{leccion}', [LeccionController::class, 'destroy'])->name('lecciones.destroy');
 
+    Route::post('cursos/{curso}/examenes', [AdminExamenController::class, 'store'])->name('examenes.store');
+    Route::get('cursos/{curso}/examenes/{examen}', [AdminExamenController::class, 'edit'])->name('examenes.edit');
+    Route::delete('cursos/{curso}/examenes/{examen}', [AdminExamenController::class, 'destroy'])->name('examenes.destroy');
+    Route::post('examenes/{examen}/preguntas', [PreguntaController::class, 'store'])->name('preguntas.store');
+    Route::delete('examenes/{examen}/preguntas/{pregunta}', [PreguntaController::class, 'destroy'])->name('preguntas.destroy');
+
+    Route::post('cursos/{curso}/tareas', [AdminTareaController::class, 'store'])->name('tareas.store');
+    Route::get('cursos/{curso}/tareas/{tarea}/entregas', [AdminTareaController::class, 'entregas'])->name('tareas.entregas');
+    Route::post('cursos/{curso}/tareas/{tarea}/entregas/{entrega}/calificar', [AdminTareaController::class, 'calificar'])->name('tareas.calificar');
+    Route::delete('cursos/{curso}/tareas/{tarea}', [AdminTareaController::class, 'destroy'])->name('tareas.destroy');
+
+    Route::get('apariencia', [AparienciaController::class, 'editar'])->name('apariencia.editar');
+    Route::put('apariencia', [AparienciaController::class, 'actualizar'])->name('apariencia.actualizar');
+
     Route::get('pagos', [OrdenController::class, 'index'])->name('pagos.index');
     Route::post('pagos/{orden}/aprobar', [OrdenController::class, 'aprobar'])->name('pagos.aprobar');
     Route::post('pagos/{orden}/rechazar', [OrdenController::class, 'rechazar'])->name('pagos.rechazar');
 
-    // Solo administradores (verificado dentro del propio controlador) pueden
-    // crear cuentas de instructor/administrador.
     Route::get('usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
     Route::post('usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
     Route::post('usuarios/{usuario}/desactivar', [UsuarioController::class, 'desactivar'])->name('usuarios.desactivar');
