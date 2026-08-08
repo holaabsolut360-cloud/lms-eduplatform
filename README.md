@@ -42,10 +42,11 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 
 ## Próximos pasos para desplegar
 
-1. `composer install` en el servidor (este entorno de desarrollo no tiene acceso a Packagist)
-2. Configurar `.env` con credenciales de base de datos y `APP_KEY`
-3. `php artisan migrate`
-4. `php artisan storage:link` — necesario para que imágenes/comprobantes subidos sean accesibles
-5. Crear el primer usuario administrador (vía `tinker` o un seeder) para poder entrar a `/admin`
-6. Cargar métodos de pago iniciales (Yape/Plin/cuenta bancaria) vía seeder o tinker, ya que aún no hay una vista admin dedicada para gestionarlos
-7. Apuntar el Document Root de Banahosting a `/public` y configurar el Cron Job para `php artisan schedule:run`
+El esqueleto de Laravel 13 (`composer.json`, `artisan`, `bootstrap/`, `config/`, `public/`, `storage/`) ya está incluido en el repo — no hace falta generarlo.
+
+1. Clonar el repo y correr `composer install` (este entorno de desarrollo no tenía salida a Packagist, así que la instalación de dependencias debe hacerse en tu máquina o en el servidor)
+2. Copiar `.env.example` a `.env`, configurar las credenciales de tu base de datos MySQL de Banahosting, y correr `php artisan key:generate`
+3. `php artisan migrate` — crea las 15 tablas
+4. `php artisan db:seed` — crea automáticamente el primer usuario **administrador** (`admin@eduplatform.test` / `cambiar-esta-clave` — **cámbiala de inmediato**) y algunos métodos de pago de ejemplo (Yape, Plin, cuenta bancaria) para editar desde la base de datos
+5. `php artisan storage:link` — necesario para que imágenes/comprobantes subidos sean accesibles públicamente
+6. En Banahosting (cPanel): apuntar el Document Root del dominio a la carpeta `/public`, y crear un Cron Job que corra `php artisan schedule:run` cada minuto
