@@ -38,7 +38,13 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - El registro público **siempre** crea cuentas de estudiante por seguridad; las cuentas de instructor/administrador solo las crea un administrador desde `Admin\UsuarioController`
 - `Gate::administrar-plataforma` (instructores y administradores acceden a `/admin`) y `Gate::gestionar-pagos` (solo administradores aprueban/rechazan órdenes) definidos en `AppServiceProvider`
 
-**Pendiente:** vistas del panel del estudiante (reproductor, examen, tarea) y del panel admin — únicos bloques que faltan para que el proyecto sea 100% ejecutable de punta a punta.
+**Pendiente:** vistas del panel admin (cursos, pagos, apariencia, usuarios) — único bloque que falta para que el proyecto sea 100% ejecutable de punta a punta.
+
+**Vistas del estudiante ✅:**
+- `layouts/estudio.blade.php` — layout oscuro tipo "modo estudio", distinto del layout público claro
+- `estudiante/tomar-curso.blade.php` — reproductor (YouTube nocookie / texto / archivo descargable), barra de progreso, sidebar con lecciones bloqueadas/desbloqueadas según el bloqueo secuencial real de la matrícula, exámenes y tareas listados dentro de su módulo
+- `estudiante/examen.blade.php` + `examen-resultado.blade.php` — rendir examen (opción múltiple/verdadero-falso/respuesta corta), resultado con nota y opción de reintentar si quedan intentos
+- `estudiante/tarea.blade.php` — entrega con archivo/comentario, estado en revisión vs. calificada con feedback del docente
 
 **Vistas públicas ✅:**
 - `layouts/publico.blade.php` — layout compartido con Tailwind (CDN), color de marca dinámico desde `ConfiguracionApariencia`, header/footer, mensajes flash
