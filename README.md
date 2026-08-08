@@ -12,52 +12,40 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - Panel de "Apariencia" para que el administrador edite el home público (hero, color de marca, cursos destacados) sin tocar código
 - Pensado para desplegarse en hosting compartido/semidedicado (Banahosting) vía cPanel
 
+## Roles
+
+- **Estudiante** — se registra libremente, compra y toma cursos
+- **Instructor** — cuenta creada solo por un administrador, gestiona sus propios cursos desde `/admin`
+- **Administrador** — además de todo lo del instructor, aprueba/rechaza pagos y crea otras cuentas internas
+
 ## Roadmap de fases
 
-1. **Base del proyecto** — estructura Laravel, limpieza de lógica multi-tenant heredada de proyectos anteriores
-2. **Contenido del curso** — módulos y lecciones ✅
-3. **Reproductor y progreso del alumno** — vista "tomar curso", bloqueo secuencial ✅ (controlador y lógica; falta vista Blade)
-4. **Exámenes y tareas** ✅ (calificación automática de exámenes, entrega/calificación manual de tareas)
-5. **Ventas y pagos** ✅ (Yape/Plin/cuenta bancaria en PEN/USD, checkout + aprobación manual → activa matrícula automáticamente)
-6. **Certificados** ✅ (emisión automática al completar 100% del curso) **y despliegue en Banahosting** (pendiente)
+1. Base del proyecto — estructura Laravel, sin lógica multi-tenant ✅
+2. Contenido del curso — módulos y lecciones ✅
+3. Reproductor y progreso del alumno — bloqueo secuencial ✅
+4. Exámenes y tareas — calificación automática/manual ✅
+5. Ventas y pagos — Yape/Plin/cuenta bancaria PEN/USD ✅
+6. Certificados — emisión automática al completar el curso ✅
 
 ## Estado actual
 
-**Esquema de datos completo** (14 migraciones + 15 modelos Eloquent).
+**✅ Proyecto ejecutable de punta a punta.** Esquema de datos, controladores, rutas y vistas Blade completos.
 
-**Controladores y rutas ya conectados:**
-- `CatalogoController` — home público, búsqueda, detalle de curso
-- `CheckoutController` — checkout con selección de método de pago y subida de comprobante
-- `Estudiante\TomarCursoController` — reproductor de curso, con la lógica de **bloqueo secuencial configurable por curso y por alumno** ya implementada (`leccionDesbloqueada()`), cálculo de avance y disparo automático de emisión de certificado al llegar a 100%
-- `Admin\CursoController` / `ModuloController` / `LeccionController` — CRUD del panel de instructor
-- `Admin\OrdenController` — aprobar/rechazar comprobantes de pago
+**Esquema de datos:** 15 migraciones (categorías, cursos, módulos, lecciones, matrículas, progreso, apariencia, exámenes, preguntas, opciones, intentos, tareas, entregas, métodos de pago, órdenes, certificados, usuarios) + 17 modelos Eloquent.
 
-**Autenticación y roles ✅:**
-- Tabla `users` con campo `rol` (`estudiante` / `instructor` / `administrador`) — plataforma single-tenant, sin tabla de academias
-- `LoginController` / `RegisterController` con las clases nativas de Laravel (`Auth`, `Hash`) — sin dependencias externas como Breeze
-- El registro público **siempre** crea cuentas de estudiante por seguridad; las cuentas de instructor/administrador solo las crea un administrador desde `Admin\UsuarioController`
-- `Gate::administrar-plataforma` (instructores y administradores acceden a `/admin`) y `Gate::gestionar-pagos` (solo administradores aprueban/rechazan órdenes) definidos en `AppServiceProvider`
+**Backend:** controladores públicos (catálogo, checkout), del estudiante (tomar curso con bloqueo secuencial real, exámenes con calificación automática, tareas) y del panel admin (cursos/módulos/lecciones, exámenes/preguntas, tareas/entregas, pagos, apariencia, usuarios). Autenticación nativa de Laravel (sin Breeze), con 3 roles y Gates de acceso.
 
-**Pendiente:** vistas del panel admin (cursos, pagos, apariencia, usuarios) — único bloque que falta para que el proyecto sea 100% ejecutable de punta a punta.
+**Vistas Blade:**
+- **Públicas** — home (estilo claro tipo c3peru.com), catálogo, detalle de curso, checkout con Yape/Plin/cuenta bancaria, login/registro
+- **Estudiante** — reproductor tipo Coursera (modo oscuro), examen, resultado de examen, tarea
+- **Admin** — listado/creación/edición de cursos (con módulos, lecciones, exámenes y tareas integrados), preguntas de examen, entregas de tarea, pagos (aprobar/rechazar), apariencia, usuarios
 
-**Vistas del estudiante ✅:**
-- `layouts/estudio.blade.php` — layout oscuro tipo "modo estudio", distinto del layout público claro
-- `estudiante/tomar-curso.blade.php` — reproductor (YouTube nocookie / texto / archivo descargable), barra de progreso, sidebar con lecciones bloqueadas/desbloqueadas según el bloqueo secuencial real de la matrícula, exámenes y tareas listados dentro de su módulo
-- `estudiante/examen.blade.php` + `examen-resultado.blade.php` — rendir examen (opción múltiple/verdadero-falso/respuesta corta), resultado con nota y opción de reintentar si quedan intentos
-- `estudiante/tarea.blade.php` — entrega con archivo/comentario, estado en revisión vs. calificada con feedback del docente
+## Próximos pasos para desplegar
 
-**Vistas públicas ✅:**
-- `layouts/publico.blade.php` — layout compartido con Tailwind (CDN), color de marca dinámico desde `ConfiguracionApariencia`, header/footer, mensajes flash
-- `publico/home.blade.php` — hero con imagen de fondo editable, tarjetas flotantes de cifras, categorías, cursos destacados, sección "nosotros" — estilo claro tipo c3peru.com
-- `publico/catalogo.blade.php` — búsqueda y grilla de cursos
-- `publico/curso-detalle.blade.php` — temario con módulos/lecciones (bloqueadas vs. preview gratis) y tarjeta de compra sticky
-- `publico/checkout.blade.php` — selección de método de pago (Yape/Plin/cuenta bancaria) por moneda, subida de comprobante
-- `publico/checkout-gracias.blade.php` — confirmación post-compra
-- `auth/login.blade.php` / `auth/registro.blade.php`
-
-**Exámenes, tareas y apariencia ✅:**
-- `Estudiante\ExamenController` — rinde examen, calificación automática vía `IntentoExamen::calificar()`, respeta `intentos_permitidos`
-- `Estudiante\TareaController` — entrega de tarea (archivo y/o comentario), bloqueada si `fecha_limite` ya pasó
-- `Admin\ExamenController` + `Admin\PreguntaController` — crear examen y agregar preguntas con sus opciones (o respuesta esperada si es de respuesta corta)
-- `Admin\TareaController` — crear tarea, listar entregas de todos los alumnos, calificar con nota + feedback
-- `Admin\AparienciaController` — conecta el panel de "Apariencia" (hero, color de marca, cifras, cursos destacados con orden) con `ConfiguracionApariencia`, tal como se diseñó en el mockup
+1. `composer install` en el servidor (este entorno de desarrollo no tiene acceso a Packagist)
+2. Configurar `.env` con credenciales de base de datos y `APP_KEY`
+3. `php artisan migrate`
+4. `php artisan storage:link` — necesario para que imágenes/comprobantes subidos sean accesibles
+5. Crear el primer usuario administrador (vía `tinker` o un seeder) para poder entrar a `/admin`
+6. Cargar métodos de pago iniciales (Yape/Plin/cuenta bancaria) vía seeder o tinker, ya que aún no hay una vista admin dedicada para gestionarlos
+7. Apuntar el Document Root de Banahosting a `/public` y configurar el Cron Job para `php artisan schedule:run`
