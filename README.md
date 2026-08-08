@@ -38,7 +38,16 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - El registro público **siempre** crea cuentas de estudiante por seguridad; las cuentas de instructor/administrador solo las crea un administrador desde `Admin\UsuarioController`
 - `Gate::administrar-plataforma` (instructores y administradores acceden a `/admin`) y `Gate::gestionar-pagos` (solo administradores aprueban/rechazan órdenes) definidos en `AppServiceProvider`
 
-**Pendiente:** vistas Blade (conectar con los mockups ya validados) — es lo único que falta para que el proyecto sea 100% ejecutable de punta a punta.
+**Pendiente:** vistas del panel del estudiante (reproductor, examen, tarea) y del panel admin — únicos bloques que faltan para que el proyecto sea 100% ejecutable de punta a punta.
+
+**Vistas públicas ✅:**
+- `layouts/publico.blade.php` — layout compartido con Tailwind (CDN), color de marca dinámico desde `ConfiguracionApariencia`, header/footer, mensajes flash
+- `publico/home.blade.php` — hero con imagen de fondo editable, tarjetas flotantes de cifras, categorías, cursos destacados, sección "nosotros" — estilo claro tipo c3peru.com
+- `publico/catalogo.blade.php` — búsqueda y grilla de cursos
+- `publico/curso-detalle.blade.php` — temario con módulos/lecciones (bloqueadas vs. preview gratis) y tarjeta de compra sticky
+- `publico/checkout.blade.php` — selección de método de pago (Yape/Plin/cuenta bancaria) por moneda, subida de comprobante
+- `publico/checkout-gracias.blade.php` — confirmación post-compra
+- `auth/login.blade.php` / `auth/registro.blade.php`
 
 **Exámenes, tareas y apariencia ✅:**
 - `Estudiante\ExamenController` — rinde examen, calificación automática vía `IntentoExamen::calificar()`, respeta `intentos_permitidos`

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('titulo', 'EduPlatform') · {{ config('app.name', 'EduPlatform') }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    @php($apariencia = \App\Models\ConfiguracionApariencia::actual())
+    <style>
+        :root { --color-marca: {{ $apariencia->color_marca }}; }
+        body { font-family: 'Inter', sans-serif; }
+        .bg-marca { background-color: var(--color-marca); }
+        .text-marca { color: var(--color-marca); }
+        .border-marca { border-color: var(--color-marca); }
+    </style>
+    @stack('estilos')
+</head>
+<body class="bg-white text-slate-800">
+
+    <header class="border-b border-slate-100 sticky top-0 bg-white/90 backdrop-blur z-40">
+        <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+            <a href="{{ route('publico.home') }}" class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-marca flex items-center justify-center text-white">
+                    <i class="ti ti-school"></i>
+                </span>
+                <span class="font-bold text-slate-900">{{ config('app.name', 'EduPlatform') }}</span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-6 text-sm text-slate-600">
+                <a href="{{ route('publico.home') }}" class="hover:text-slate-900">Inicio</a>
+                <a href="{{ route('publico.catalogo') }}" class="hover:text-slate-900">Cursos</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                @auth
+                    @if(auth()->user()->esInstructor())
+                        <a href="{{ route('admin.cursos.index') }}" class="text-sm text-slate-600 hover:text-slate-900">Panel admin</a>
+                    @endif
+                    <span class="text-sm text-slate-600 hidden sm:inline">{{ auth()->user()->nombre }}</span>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="text-sm font-medium px-4 py-2 rounded-full border border-slate-200 hover:bg-slate-50">Salir</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-sm font-medium px-4 py-2 rounded-full border border-slate-200 hover:bg-slate-50">Ingresar</a>
+                    <a href="{{ route('registro') }}" class="text-sm font-semibold text-white px-4 py-2 rounded-full bg-marca">Crear cuenta</a>
+                @endauth
+            </div>
+        </div>
+    </header>
+
+    @if (session('success'))
+        <div class="max-w-6xl mx-auto px-6 mt-4">
+            <div class="bg-green-50 text-green-700 border border-green-200 rounded-xl px-4 py-3 text-sm">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+    @if (session('error'))
+        <div class="max-w-6xl mx-auto px-6 mt-4">
+            <div class="bg-red-50 text-red-700 border border-red-200 rounded-xl px-4 py-3 text-sm">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
+    <main>
+        @yield('contenido')
+    </main>
+
+    <footer class="border-t border-slate-100 mt-20 py-10">
+        <div class="max-w-6xl mx-auto px-6 text-sm text-slate-500 flex flex-col sm:flex-row justify-between gap-3">
+            <span>© {{ date('Y') }} {{ config('app.name', 'EduPlatform') }}. Todos los derechos reservados.</span>
+            <span>Hecho con Laravel</span>
+        </div>
+    </footer>
+
+    @stack('scripts')
+</body>
+</html>
