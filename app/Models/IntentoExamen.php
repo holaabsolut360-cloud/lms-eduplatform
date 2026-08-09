@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class IntentoExamen extends Model
 {
+    protected $table = 'intentos_examen';
+
     protected $fillable = [
         'examen_id', 'matricula_id', 'numero_intento', 'respuestas',
         'nota_obtenida', 'aprobado', 'iniciado_en', 'finalizado_en',

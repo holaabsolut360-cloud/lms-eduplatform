@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Leccion extends Model
 {
+    protected $table = 'lecciones';
+
     protected $fillable = [
         'modulo_id', 'titulo', 'orden', 'tipo', 'video_youtube_url',
         'contenido_html', 'archivo_url', 'duracion_minutos', 'es_preview_gratis',

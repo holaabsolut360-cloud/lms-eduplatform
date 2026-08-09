@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class Orden extends Model
 {
+    protected $table = 'ordenes';
+
     protected $fillable = [
         'codigo', 'curso_id', 'estudiante_id', 'metodo_pago_id', 'monto', 'moneda',
         'estado', 'comprobante_url', 'motivo_rechazo', 'revisado_por', 'revisado_en',

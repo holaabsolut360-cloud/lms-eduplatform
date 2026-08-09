@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProgresoLeccion extends Model
 {
+    protected $table = 'progreso_lecciones';
+
     protected $fillable = ['matricula_id', 'leccion_id', 'completada_en'];
 
     protected $casts = [
