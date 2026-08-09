@@ -46,6 +46,8 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - Banner "Ver mi certificado" que aparece automáticamente en el reproductor cuando el alumno llega al 100% de avance
 - **Requiere el paquete `barryvdh/laravel-dompdf`**, que no viene en el esqueleto base — instálalo con `composer require barryvdh/laravel-dompdf` antes de probar la descarga de PDF
 
+**Login con video ✅:** pantalla de ingreso rediseñada con layout de dos columnas — video en bucle a la izquierda (editable desde Apariencia, con fallback a degradado de marca si no hay video configurado) y formulario a la derecha con datos de contacto y botón flotante de WhatsApp.
+
 ## Notas de configuración importantes
 
 - **Zona horaria**: el proyecto usa `America/Lima` (configurado en `config/app.php` y `.env.example` vía `APP_TIMEZONE`). Si tu `.env` ya existía antes de este cambio, agrega manualmente la línea `APP_TIMEZONE=America/Lima` y reinicia el servidor.

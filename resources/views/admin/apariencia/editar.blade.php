@@ -73,6 +73,31 @@
         <textarea name="nosotros_texto" rows="3" placeholder="Texto de la sección Nosotros" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">{{ $apariencia->nosotros_texto }}</textarea>
     </div>
 
+    <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-movie"></i> Video de la pantalla de login</h3>
+        <label class="text-xs text-slate-500">URL del video (formato .mp4, se reproduce en bucle sin sonido de fondo)</label>
+        <input type="url" name="login_video_url" value="{{ $apariencia->login_video_url }}" placeholder="https://..."
+               class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
+        <p class="text-xs text-slate-400 mt-2">Si lo dejas vacío, se muestra un degradado con tu color de marca en su lugar.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-slate-100 p-5">
+        <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-phone"></i> Datos de contacto</h3>
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <div>
+                <label class="text-xs text-slate-500">Teléfono (se muestra tal cual)</label>
+                <input type="text" name="contacto_telefono" value="{{ $apariencia->contacto_telefono }}" placeholder="+51 927 788 737" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
+            </div>
+            <div>
+                <label class="text-xs text-slate-500">Correo</label>
+                <input type="email" name="contacto_email" value="{{ $apariencia->contacto_email }}" placeholder="info@tudominio.pe" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
+            </div>
+        </div>
+        <label class="text-xs text-slate-500">WhatsApp (solo números con código de país, sin +, espacios ni guiones)</label>
+        <input type="text" name="contacto_whatsapp" value="{{ $apariencia->contacto_whatsapp }}" placeholder="51927788737" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
+        <p class="text-xs text-slate-400 mt-2">Activa el botón flotante de WhatsApp en la pantalla de login.</p>
+    </div>
+
     <button class="bg-marca text-white font-semibold px-6 py-2.5 rounded-lg text-sm">Guardar cambios</button>
 </form>
 @endsection
