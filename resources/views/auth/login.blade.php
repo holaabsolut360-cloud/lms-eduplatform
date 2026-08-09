@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    @php($apariencia = \App\Models\ConfiguracionApariencia::actual())
+    @php
+        $apariencia = \App\Models\ConfiguracionApariencia::actual();
+    @endphp
     <style>
         :root { --color-marca: {{ $apariencia->color_marca }}; }
         body { font-family: 'Inter', sans-serif; }
