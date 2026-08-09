@@ -22,9 +22,20 @@
 <body class="bg-white">
 <div class="min-h-screen grid lg:grid-cols-2">
 
+    @php
+        $youtubeId = null;
+        if ($apariencia->login_video_url && preg_match('/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/', $apariencia->login_video_url, $m)) {
+            $youtubeId = $m[1];
+        }
+    @endphp
+
     {{-- LADO IZQUIERDO: VIDEO --}}
     <div class="relative hidden lg:block overflow-hidden bg-slate-900">
-        @if($apariencia->login_video_url)
+        @if($youtubeId)
+            <iframe class="absolute top-1/2 left-1/2 w-[300%] h-[300%] md:w-[177.78vh] md:h-[100vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                    src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0"
+                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        @elseif($apariencia->login_video_url)
             <video id="video-login" class="absolute inset-0 w-full h-full object-cover opacity-80" autoplay loop muted playsinline
                    @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
                 <source src="{{ $apariencia->login_video_url }}" type="video/mp4">

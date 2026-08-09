@@ -75,8 +75,8 @@
 
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-movie"></i> Video de la pantalla de login</h3>
-        <label class="text-xs text-slate-500">URL del video (formato .mp4, se reproduce en bucle sin sonido de fondo)</label>
-        <input type="url" name="login_video_url" value="{{ $apariencia->login_video_url }}" placeholder="https://..."
+        <label class="text-xs text-slate-500">URL del video: acepta un link de YouTube (se detecta automático) o una URL directa a un archivo .mp4</label>
+        <input type="url" name="login_video_url" value="{{ $apariencia->login_video_url }}" placeholder="https://youtube.com/watch?v=... o https://tudominio.com/video.mp4"
                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
         <p class="text-xs text-slate-400 mt-2">Si lo dejas vacío, se muestra un degradado con tu color de marca en su lugar.</p>
     </div>
