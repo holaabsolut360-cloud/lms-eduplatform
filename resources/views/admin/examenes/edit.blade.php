@@ -31,11 +31,11 @@
 
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <h3 class="font-semibold text-sm mb-3">+ Agregar pregunta</h3>
-        <form method="POST" action="{{ route('admin.preguntas.store', $examen) }}" class="space-y-2" x-data="{ tipo: 'opcion_multiple' }">
+        <form method="POST" action="{{ route('admin.preguntas.store', $examen) }}" class="space-y-2" id="form-nueva-pregunta">
             @csrf
             <textarea name="enunciado" placeholder="Enunciado de la pregunta" required rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"></textarea>
             <div class="grid grid-cols-2 gap-2">
-                <select name="tipo" onchange="document.getElementById('bloque-opciones').style.display = this.value === 'respuesta_corta' ? 'none' : 'block'; document.getElementById('bloque-corta').style.display = this.value === 'respuesta_corta' ? 'block' : 'none';" class="border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                <select name="tipo" id="select-tipo-pregunta" class="border border-slate-200 rounded-lg px-3 py-2 text-sm">
                     <option value="opcion_multiple">Opción múltiple</option>
                     <option value="verdadero_falso">Verdadero / Falso</option>
                     <option value="respuesta_corta">Respuesta corta</option>
@@ -60,4 +60,25 @@
         </form>
     </div>
 </div>
+
+<script>
+    (function () {
+        const select = document.getElementById('select-tipo-pregunta');
+        const bloqueOpciones = document.getElementById('bloque-opciones');
+        const bloqueCorta = document.getElementById('bloque-corta');
+
+        function actualizar() {
+            const esCorta = select.value === 'respuesta_corta';
+
+            bloqueOpciones.style.display = esCorta ? 'none' : 'block';
+            bloqueOpciones.querySelectorAll('input').forEach(input => input.disabled = esCorta);
+
+            bloqueCorta.style.display = esCorta ? 'block' : 'none';
+            bloqueCorta.querySelectorAll('input').forEach(input => input.disabled = !esCorta);
+        }
+
+        select.addEventListener('change', actualizar);
+        actualizar(); // estado inicial: deshabilita el bloque de respuesta corta
+    })();
+</script>
 @endsection
