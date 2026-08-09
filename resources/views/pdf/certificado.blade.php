@@ -86,7 +86,7 @@
             <p class="texto-curso">por haber completado satisfactoriamente el curso</p>
             <div class="nombre-curso">{{ $curso->titulo }}</div>
 
-            <p class="texto-curso">Emitido el {{ $certificado->emitido_en->format('d \d\e F \d\e Y') }}</p>
+            <p class="texto-curso">Emitido el {{ $certificado->emitido_en->locale('es')->translatedFormat('d \d\e F \d\e Y') }}</p>
 
             <div class="pie">
                 Este certificado puede verificarse en {{ url('/verificar-certificado') }}
