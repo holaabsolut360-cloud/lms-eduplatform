@@ -13,9 +13,11 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Estudiante\CertificadoController;
 use App\Http\Controllers\Estudiante\ExamenController as EstudianteExamenController;
 use App\Http\Controllers\Estudiante\TareaController as EstudianteTareaController;
 use App\Http\Controllers\Estudiante\TomarCursoController;
+use App\Http\Controllers\VerificarCertificadoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [CatalogoController::class, 'home'])->name('publico.home');
 Route::get('/cursos', [CatalogoController::class, 'buscar'])->name('publico.catalogo');
 Route::get('/cursos/{curso:slug}', [CatalogoController::class, 'detalle'])->name('publico.curso.detalle');
+Route::get('/verificar-certificado/{codigo?}', [VerificarCertificadoController::class, 'mostrar'])->name('publico.certificado.verificar');
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +71,9 @@ Route::middleware(['auth'])->prefix('mis-cursos')->name('estudiante.')->group(fu
 
     Route::get('/{curso:slug}/tarea/{tarea}', [EstudianteTareaController::class, 'mostrar'])->name('tarea.mostrar');
     Route::post('/{curso:slug}/tarea/{tarea}', [EstudianteTareaController::class, 'entregar'])->name('tarea.entregar');
+
+    Route::get('/{curso:slug}/certificado', [CertificadoController::class, 'mostrar'])->name('certificado.mostrar');
+    Route::get('/{curso:slug}/certificado/descargar', [CertificadoController::class, 'descargar'])->name('certificado.descargar');
 });
 
 /*

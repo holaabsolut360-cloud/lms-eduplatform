@@ -40,7 +40,15 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - **Estudiante** — reproductor tipo Coursera (modo oscuro), examen, resultado de examen, tarea
 - **Admin** — listado/creación/edición de cursos (con módulos, lecciones, exámenes y tareas integrados), preguntas de examen, entregas de tarea, pagos (aprobar/rechazar), apariencia, usuarios
 
-## Próximos pasos para desplegar
+**Certificados descargables ✅:**
+- `Estudiante\CertificadoController` — vista "Mi certificado" + descarga en PDF (diseño tipo diploma horizontal)
+- `VerificarCertificadoController` — página pública `/verificar-certificado/{codigo}` para que cualquiera (ej. un empleador) valide la autenticidad de un certificado sin necesidad de login
+- Banner "Ver mi certificado" que aparece automáticamente en el reproductor cuando el alumno llega al 100% de avance
+- **Requiere el paquete `barryvdh/laravel-dompdf`**, que no viene en el esqueleto base — instálalo con `composer require barryvdh/laravel-dompdf` antes de probar la descarga de PDF
+
+## Notas de configuración importantes
+
+- **Zona horaria**: el proyecto usa `America/Lima` (configurado en `config/app.php` y `.env.example` vía `APP_TIMEZONE`). Si tu `.env` ya existía antes de este cambio, agrega manualmente la línea `APP_TIMEZONE=America/Lima` y reinicia el servidor.
 
 El esqueleto de Laravel 13 (`composer.json`, `artisan`, `bootstrap/`, `config/`, `public/`, `storage/`) ya está incluido en el repo — no hace falta generarlo.
 

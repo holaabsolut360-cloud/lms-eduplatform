@@ -61,6 +61,13 @@
                 </div>
                 <span class="text-xs font-semibold">{{ $porcentaje }}%</span>
             </div>
+
+            @if($porcentaje >= 100 && $curso->certificado_habilitado)
+                <a href="{{ route('estudiante.certificado.mostrar', $curso) }}"
+                   class="mt-3 flex items-center gap-2 bg-marca/15 border border-marca/30 text-white text-xs font-medium px-3 py-2.5 rounded-lg hover:bg-marca/25">
+                    <i class="ti ti-certificate text-marca"></i> Ver mi certificado
+                </a>
+            @endif
         </div>
 
         <div class="flex-1 overflow-y-auto px-2 pb-4">
