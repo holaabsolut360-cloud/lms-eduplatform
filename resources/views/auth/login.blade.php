@@ -32,29 +32,33 @@
     @endphp
 
     {{-- LADO IZQUIERDO: VIDEO --}}
-    <div class="relative hidden lg:block overflow-hidden bg-slate-900">
-        @if($youtubeId)
-            <iframe class="absolute top-1/2 left-1/2 w-[300%] h-[300%] md:w-[177.78vh] md:h-[100vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                    src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&controls=0&showinfo=0&modestbranding=1&playsinline=1&rel=0"
-                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-        @elseif($apariencia->login_video_url)
-            <video id="video-login" class="absolute inset-0 w-full h-full object-cover opacity-80" autoplay loop muted playsinline
-                   @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
-                <source src="{{ $apariencia->login_video_url }}" type="video/mp4">
-            </video>
-            <button onclick="const v = document.getElementById('video-login'); v.muted = !v.muted; this.textContent = v.muted ? 'Activar sonido' : 'Silenciar';"
-                    class="absolute top-6 left-6 bg-black/70 text-white text-xs font-medium px-3 py-2 rounded-lg backdrop-blur">
-                Activar sonido
-            </button>
-        @else
-            <div class="absolute inset-0" style="background: linear-gradient(135deg, #1a1c33, var(--color-marca));"></div>
-        @endif
+    <div class="relative hidden lg:flex items-center justify-center p-10 xl:p-16 overflow-hidden"
+         style="background: linear-gradient(135deg, #1a1c33, var(--color-marca));">
 
-        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+        {{-- patrón decorativo de puntos --}}
+        <div class="absolute top-8 left-8 grid grid-cols-6 gap-1.5 opacity-20">
+            @for($i = 0; $i < 24; $i++)
+                <span class="w-1 h-1 rounded-full bg-white"></span>
+            @endfor
+        </div>
 
-        <div class="absolute bottom-10 left-10 right-10 text-white">
-            <div class="text-2xl font-bold mb-2">Aprende sin límites</div>
-            <div class="text-sm text-white/80">Accede a tus cursos, exámenes y certificados desde cualquier lugar.</div>
+        <div class="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
+            @if($youtubeId)
+                <iframe class="w-full h-full"
+                        src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&rel=0"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            @elseif($apariencia->login_video_url)
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline
+                       @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
+                    <source src="{{ $apariencia->login_video_url }}" type="video/mp4">
+                </video>
+            @else
+                <div class="w-full h-full flex items-center justify-center">
+                    <span class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                        <i class="ti ti-school text-white text-3xl"></i>
+                    </span>
+                </div>
+            @endif
         </div>
     </div>
 
