@@ -44,7 +44,7 @@
 
         <div class="relative w-full max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-black">
             @if($apariencia->login_video_archivo)
-                <video class="w-full h-full object-cover" autoplay loop muted playsinline
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline controls controlsList="nodownload"
                        @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
                     <source src="{{ asset('storage/' . $apariencia->login_video_archivo) }}" type="video/mp4">
                 </video>
@@ -53,7 +53,7 @@
                         src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&rel=0"
                         frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             @elseif($apariencia->login_video_url)
-                <video class="w-full h-full object-cover" autoplay loop muted playsinline
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline controls controlsList="nodownload"
                        @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
                     <source src="{{ $apariencia->login_video_url }}" type="video/mp4">
                 </video>
