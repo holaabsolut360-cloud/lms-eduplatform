@@ -74,12 +74,51 @@
         @yield('contenido')
     </main>
 
-    <footer class="border-t border-slate-100 mt-20 py-10">
-        <div class="max-w-6xl mx-auto px-6 text-sm text-slate-500 flex flex-col sm:flex-row justify-between gap-3">
-            <span>© {{ date('Y') }} {{ config('app.name', 'EduPlatform') }}. Todos los derechos reservados.</span>
-            <span>Hecho con Laravel</span>
+    <footer class="border-t border-slate-100 mt-20 bg-slate-900">
+        <div class="max-w-6xl mx-auto px-6 py-14 grid sm:grid-cols-3 gap-10">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-marca flex items-center justify-center text-white">
+                        <i class="ti ti-school"></i>
+                    </span>
+                    <span class="font-bold text-white">{{ config('app.name', 'EduPlatform') }}</span>
+                </div>
+                <p class="text-sm text-slate-400 max-w-xs">Aprende a tu propio ritmo, con certificado al finalizar cada curso.</p>
+            </div>
+            <div>
+                <div class="text-white font-semibold text-sm mb-3">Enlaces</div>
+                <div class="flex flex-col gap-2 text-sm text-slate-400">
+                    <a href="{{ route('publico.home') }}" class="hover:text-white">Inicio</a>
+                    <a href="{{ route('publico.catalogo') }}" class="hover:text-white">Cursos</a>
+                    <a href="{{ route('publico.certificado.verificar') }}" class="hover:text-white">Verificar certificado</a>
+                </div>
+            </div>
+            <div>
+                <div class="text-white font-semibold text-sm mb-3">Contacto</div>
+                <div class="flex flex-col gap-2 text-sm text-slate-400">
+                    @if($apariencia->contacto_telefono)
+                        <span class="flex items-center gap-2"><i class="ti ti-phone"></i> {{ $apariencia->contacto_telefono }}</span>
+                    @endif
+                    @if($apariencia->contacto_email)
+                        <span class="flex items-center gap-2"><i class="ti ti-mail"></i> {{ $apariencia->contacto_email }}</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-white/10">
+            <div class="max-w-6xl mx-auto px-6 py-5 text-xs text-slate-500 flex flex-col sm:flex-row justify-between gap-2">
+                <span>© {{ date('Y') }} {{ config('app.name', 'EduPlatform') }}. Todos los derechos reservados.</span>
+                <span>Hecho con Laravel</span>
+            </div>
         </div>
     </footer>
+
+    @if($apariencia->contacto_whatsapp)
+        <a href="https://wa.me/{{ $apariencia->contacto_whatsapp }}" target="_blank"
+           class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center shadow-lg hover:bg-green-600 z-40">
+            <i class="ti ti-brand-whatsapp text-2xl"></i>
+        </a>
+    @endif
 
     @stack('scripts')
 </body>

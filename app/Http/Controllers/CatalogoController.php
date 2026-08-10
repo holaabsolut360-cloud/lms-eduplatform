@@ -25,7 +25,9 @@ class CatalogoController extends Controller
             ->having('cursos_count', '>', 0)
             ->get();
 
-        return view('publico.home', compact('apariencia', 'destacados', 'categorias'));
+        $totalCursosPublicados = Curso::where('estado', 'publicado')->count();
+
+        return view('publico.home', compact('apariencia', 'destacados', 'categorias', 'totalCursosPublicados'));
     }
 
     public function buscar(Request $request): View
