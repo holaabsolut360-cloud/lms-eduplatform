@@ -26,7 +26,7 @@
 
     @php
         $youtubeId = null;
-        if ($apariencia->login_video_url && preg_match('/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/', $apariencia->login_video_url, $m)) {
+        if (!$apariencia->login_video_archivo && $apariencia->login_video_url && preg_match('/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/', $apariencia->login_video_url, $m)) {
             $youtubeId = $m[1];
         }
     @endphp
@@ -42,8 +42,13 @@
             @endfor
         </div>
 
-        <div class="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
-            @if($youtubeId)
+        <div class="relative w-full max-w-[300px] aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl bg-black">
+            @if($apariencia->login_video_archivo)
+                <video class="w-full h-full object-cover" autoplay loop muted playsinline
+                       @if($apariencia->hero_imagen_fondo) poster="{{ asset('storage/' . $apariencia->hero_imagen_fondo) }}" @endif>
+                    <source src="{{ asset('storage/' . $apariencia->login_video_archivo) }}" type="video/mp4">
+                </video>
+            @elseif($youtubeId)
                 <iframe class="w-full h-full"
                         src="https://www.youtube-nocookie.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}&rel=0"
                         frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>

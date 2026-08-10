@@ -75,10 +75,24 @@
 
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-movie"></i> Video de la pantalla de login</h3>
-        <label class="text-xs text-slate-500">URL del video: acepta un link de YouTube (se detecta automático) o una URL directa a un archivo .mp4</label>
-        <input type="url" name="login_video_url" value="{{ $apariencia->login_video_url }}" placeholder="https://youtube.com/watch?v=... o https://tudominio.com/video.mp4"
+
+        <label class="text-xs text-slate-500">Subir video (formato reel/vertical recomendado, .mp4/.mov/.webm, hasta 50MB)</label>
+        <input type="file" name="login_video_archivo" accept="video/mp4,video/quicktime,video/webm" class="w-full text-sm mt-1">
+        @if($apariencia->login_video_archivo)
+            <p class="text-xs text-green-600 mt-1"><i class="ti ti-check"></i> Ya tienes un video subido. Sube uno nuevo para reemplazarlo.</p>
+        @endif
+
+        <div class="flex items-center gap-2 my-3">
+            <div class="flex-1 h-px bg-slate-100"></div>
+            <span class="text-xs text-slate-400">o pega un link</span>
+            <div class="flex-1 h-px bg-slate-100"></div>
+        </div>
+
+        <label class="text-xs text-slate-500">URL de YouTube (se detecta automático) o link directo a un .mp4</label>
+        <input type="url" name="login_video_url" value="{{ $apariencia->login_video_archivo ? '' : $apariencia->login_video_url }}" placeholder="https://youtube.com/watch?v=..."
                class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
-        <p class="text-xs text-slate-400 mt-2">Si lo dejas vacío, se muestra un degradado con tu color de marca en su lugar.</p>
+
+        <p class="text-xs text-slate-400 mt-3">Si subes un archivo, tiene prioridad sobre el link. Si dejas ambos vacíos, se muestra un degradado con tu color de marca.</p>
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-100 p-5">

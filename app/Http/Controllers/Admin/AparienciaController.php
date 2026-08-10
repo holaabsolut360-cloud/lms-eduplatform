@@ -30,6 +30,7 @@ class AparienciaController extends Controller
             'hero_texto_boton' => ['required', 'string', 'max:50'],
             'hero_imagen_fondo' => ['nullable', 'image', 'max:4096'],
             'login_video_url' => ['nullable', 'url'],
+            'login_video_archivo' => ['nullable', 'file', 'mimes:mp4,mov,webm', 'max:51200'], // hasta 50MB
             'color_marca' => ['required', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'cifra_estudiantes' => ['required', 'string', 'max:20'],
             'cifra_empresas' => ['required', 'string', 'max:20'],
@@ -48,6 +49,13 @@ class AparienciaController extends Controller
             $data['hero_imagen_fondo'] = $request->file('hero_imagen_fondo')->store('apariencia', 'public');
         } else {
             unset($data['hero_imagen_fondo']);
+        }
+
+        if ($request->hasFile('login_video_archivo')) {
+            $data['login_video_archivo'] = $request->file('login_video_archivo')->store('apariencia', 'public');
+            $data['login_video_url'] = null; // el archivo subido tiene prioridad sobre un link externo
+        } else {
+            unset($data['login_video_archivo']);
         }
 
         // Marca los cursos elegidos como destacados y desmarca el resto,

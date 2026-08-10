@@ -9,7 +9,7 @@ class ConfiguracionApariencia extends Model
     protected $table = 'configuracion_apariencia';
 
     protected $fillable = [
-        'hero_titulo', 'hero_subtitulo', 'hero_texto_boton', 'hero_imagen_fondo', 'login_video_url',
+        'hero_titulo', 'hero_subtitulo', 'hero_texto_boton', 'hero_imagen_fondo', 'login_video_url', 'login_video_archivo',
         'color_marca', 'cifra_estudiantes', 'cifra_empresas', 'cifra_rating',
         'nosotros_texto', 'contacto_telefono', 'contacto_whatsapp', 'contacto_email',
         'cursos_destacados_ids',
