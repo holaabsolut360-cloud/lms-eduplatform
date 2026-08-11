@@ -12,6 +12,8 @@ class LeccionController extends Controller
 {
     public function store(Modulo $modulo, Request $request): RedirectResponse
     {
+        abort_unless($modulo->curso->perteneceA(auth()->user()), 403);
+
         $data = $this->validarDatos($request);
         $data['orden'] = $modulo->lecciones()->max('orden') + 1;
 
@@ -22,6 +24,8 @@ class LeccionController extends Controller
 
     public function update(Modulo $modulo, Leccion $leccion, Request $request): RedirectResponse
     {
+        abort_unless($modulo->curso->perteneceA(auth()->user()), 403);
+
         $leccion->update($this->validarDatos($request));
 
         return back()->with('success', 'Lección actualizada.');
@@ -29,6 +33,8 @@ class LeccionController extends Controller
 
     public function destroy(Modulo $modulo, Leccion $leccion): RedirectResponse
     {
+        abort_unless($modulo->curso->perteneceA(auth()->user()), 403);
+
         $leccion->delete();
 
         return back()->with('success', 'Lección eliminada.');

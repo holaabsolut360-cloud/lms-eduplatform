@@ -14,6 +14,8 @@ class TareaController extends Controller
 {
     public function store(Curso $curso, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate([
             'modulo_id' => ['nullable', 'exists:modulos,id'],
             'titulo' => ['required', 'string', 'max:255'],
@@ -29,6 +31,7 @@ class TareaController extends Controller
 
     public function entregas(Curso $curso, Tarea $tarea): View
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
         abort_unless($tarea->curso_id === $curso->id, 404);
 
         $entregas = $tarea->entregas()->with('matricula.estudiante')->latest('entregado_en')->get();
@@ -38,6 +41,8 @@ class TareaController extends Controller
 
     public function calificar(Curso $curso, Tarea $tarea, EntregaTarea $entrega, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate([
             'nota' => ['required', 'numeric', 'min:0', 'max:' . $tarea->puntaje_maximo],
             'feedback_docente' => ['nullable', 'string', 'max:1000'],
@@ -50,6 +55,8 @@ class TareaController extends Controller
 
     public function destroy(Curso $curso, Tarea $tarea): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $tarea->delete();
 
         return back()->with('success', 'Tarea eliminada.');

@@ -29,9 +29,16 @@
         </div>
 
         <nav class="py-3 flex-1 overflow-y-auto text-sm">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.dashboard') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                <i class="ti ti-layout-dashboard"></i> Dashboard
+            </a>
+
             <div class="text-[10px] tracking-wide text-slate-500 uppercase px-5 pt-3 pb-1">Enseñanza</div>
             <a href="{{ route('admin.cursos.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.cursos.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
                 <i class="ti ti-books"></i> Mis cursos
+            </a>
+            <a href="{{ route('admin.categorias.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.categorias.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                <i class="ti ti-category"></i> Categorías
             </a>
 
             <div class="text-[10px] tracking-wide text-slate-500 uppercase px-5 pt-3 pb-1">Mi web pública</div>
@@ -44,6 +51,9 @@
 
             @if(auth()->user()->esAdministrador())
                 <div class="text-[10px] tracking-wide text-slate-500 uppercase px-5 pt-3 pb-1">Plataforma</div>
+                <a href="{{ route('admin.metodos-pago.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.metodos-pago.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                    <i class="ti ti-credit-card"></i> Métodos de pago
+                </a>
                 <a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.usuarios.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
                     <i class="ti ti-users"></i> Usuarios
                 </a>

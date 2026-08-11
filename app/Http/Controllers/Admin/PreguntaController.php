@@ -12,6 +12,8 @@ class PreguntaController extends Controller
 {
     public function store(Examen $examen, Request $request): RedirectResponse
     {
+        abort_unless($examen->curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate([
             'enunciado' => ['required', 'string'],
             'tipo' => ['required', 'in:opcion_multiple,verdadero_falso,respuesta_corta'],
@@ -45,6 +47,8 @@ class PreguntaController extends Controller
 
     public function destroy(Examen $examen, Pregunta $pregunta): RedirectResponse
     {
+        abort_unless($examen->curso->perteneceA(auth()->user()), 403);
+
         $pregunta->delete();
 
         return back()->with('success', 'Pregunta eliminada.');

@@ -153,6 +153,15 @@
                 </div>
             </div>
             <div>
+                <label class="text-xs text-slate-500">Categoría</label>
+                <select name="categoria_id" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
+                    <option value="">Sin categoría</option>
+                    @foreach($categorias as $categoria)
+                        <option value="{{ $categoria->id }}" @selected($curso->categoria_id === $categoria->id)>{{ $categoria->nombre }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
                 <label class="text-xs text-slate-500">Nivel</label>
                 <select name="nivel" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
                     <option value="basico" @selected($curso->nivel === 'basico')>Básico</option>

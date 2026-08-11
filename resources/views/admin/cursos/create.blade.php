@@ -7,6 +7,16 @@
     @csrf
 
     <div>
+        <label class="text-sm font-medium text-slate-700">Categoría</label>
+        <select name="categoria_id" class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm mt-1">
+            <option value="">Sin categoría</option>
+            @foreach($categorias as $categoria)
+                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div>
         <label class="text-sm font-medium text-slate-700">Título del curso</label>
         <input type="text" name="titulo" value="{{ old('titulo') }}" required
                class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm mt-1">

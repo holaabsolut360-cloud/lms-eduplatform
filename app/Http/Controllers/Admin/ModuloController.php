@@ -12,6 +12,8 @@ class ModuloController extends Controller
 {
     public function store(Curso $curso, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate(['titulo' => ['required', 'string', 'max:255']]);
 
         $curso->modulos()->create([
@@ -24,6 +26,8 @@ class ModuloController extends Controller
 
     public function update(Curso $curso, Modulo $modulo, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate(['titulo' => ['required', 'string', 'max:255']]);
         $modulo->update($data);
 
@@ -32,6 +36,8 @@ class ModuloController extends Controller
 
     public function reordenar(Curso $curso, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         // $request->orden = [modulo_id => nuevo_orden, ...]
         foreach ($request->validate(['orden' => ['required', 'array']])['orden'] as $moduloId => $orden) {
             Modulo::where('id', $moduloId)->where('curso_id', $curso->id)->update(['orden' => $orden]);
@@ -42,6 +48,8 @@ class ModuloController extends Controller
 
     public function destroy(Curso $curso, Modulo $modulo): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $modulo->delete();
 
         return back()->with('success', 'Módulo eliminado.');

@@ -13,6 +13,8 @@ class ExamenController extends Controller
 {
     public function store(Curso $curso, Request $request): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $data = $request->validate([
             'modulo_id' => ['nullable', 'exists:modulos,id'],
             'titulo' => ['required', 'string', 'max:255'],
@@ -31,6 +33,8 @@ class ExamenController extends Controller
 
     public function edit(Curso $curso, Examen $examen): View
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $examen->load('preguntas.opciones');
 
         return view('admin.examenes.edit', compact('curso', 'examen'));
@@ -38,6 +42,8 @@ class ExamenController extends Controller
 
     public function destroy(Curso $curso, Examen $examen): RedirectResponse
     {
+        abort_unless($curso->perteneceA(auth()->user()), 403);
+
         $examen->delete();
 
         return back()->with('success', 'Examen eliminado.');

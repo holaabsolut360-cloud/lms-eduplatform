@@ -58,4 +58,10 @@ class Curso extends Model
     {
         return $this->modulos->sum(fn ($m) => $m->lecciones->count());
     }
+
+    // Un administrador puede gestionar cualquier curso; un instructor solo los suyos.
+    public function perteneceA(User $user): bool
+    {
+        return $user->esAdministrador() || $this->instructor_id === $user->id;
+    }
 }

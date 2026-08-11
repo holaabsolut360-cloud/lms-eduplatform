@@ -15,6 +15,7 @@ class CursoController extends Controller
     {
         $cursos = Curso::withCount('matriculas')
             ->with('categoria')
+            ->when(!auth()->user()->esAdministrador(), fn ($q) => $q->where('instructor_id', auth()->id()))
             ->latest()
             ->paginate(15);
 
@@ -23,7 +24,9 @@ class CursoController extends Controller
 
     public function create(): View
     {
-        return view('admin.cursos.create');
+        $categorias = \App\Models\Categoria::orderBy('nombre')->get();
+
+        return view('admin.cursos.create', compact('categorias'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -41,13 +44,18 @@ class CursoController extends Controller
 
     public function edit(Curso $curso): View
     {
-        $curso->load('modulos.lecciones');
+        $this->autorizar($curso);
 
-        return view('admin.cursos.edit', compact('curso'));
+        $curso->load('modulos.lecciones');
+        $categorias = \App\Models\Categoria::orderBy('nombre')->get();
+
+        return view('admin.cursos.edit', compact('curso', 'categorias'));
     }
 
     public function update(Request $request, Curso $curso): RedirectResponse
     {
+        $this->autorizar($curso);
+
         $curso->update($this->validarDatos($request));
 
         return back()->with('success', 'Curso actualizado.');
@@ -55,6 +63,8 @@ class CursoController extends Controller
 
     public function publicar(Curso $curso): RedirectResponse
     {
+        $this->autorizar($curso);
+
         abort_if($curso->modulos()->doesntExist(), 400, 'Agrega al menos un módulo antes de publicar.');
 
         $curso->update(['estado' => 'publicado']);
@@ -64,9 +74,17 @@ class CursoController extends Controller
 
     public function destroy(Curso $curso): RedirectResponse
     {
+        $this->autorizar($curso);
+
         $curso->delete();
 
         return redirect()->route('admin.cursos.index')->with('success', 'Curso eliminado.');
+    }
+
+    // Un instructor solo puede tocar sus propios cursos; un administrador puede tocar cualquiera.
+    private function autorizar(Curso $curso): void
+    {
+        abort_unless($curso->perteneceA(auth()->user()), 403, 'Este curso pertenece a otro instructor.');
     }
 
     private function validarDatos(Request $request): array

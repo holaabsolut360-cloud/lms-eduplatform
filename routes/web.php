@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\AparienciaController;
+use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\CursoController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExamenController as AdminExamenController;
 use App\Http\Controllers\Admin\LeccionController;
+use App\Http\Controllers\Admin\MetodoPagoController;
 use App\Http\Controllers\Admin\ModuloController;
 use App\Http\Controllers\Admin\OrdenController;
 use App\Http\Controllers\Admin\PreguntaController;
@@ -83,6 +86,8 @@ Route::middleware(['auth'])->prefix('mis-cursos')->name('estudiante.')->group(fu
 */
 Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name('admin.')->group(function () {
 
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('cursos', CursoController::class);
     Route::post('cursos/{curso}/publicar', [CursoController::class, 'publicar'])->name('cursos.publicar');
 
@@ -105,6 +110,17 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
     Route::get('cursos/{curso}/tareas/{tarea}/entregas', [AdminTareaController::class, 'entregas'])->name('tareas.entregas');
     Route::post('cursos/{curso}/tareas/{tarea}/entregas/{entrega}/calificar', [AdminTareaController::class, 'calificar'])->name('tareas.calificar');
     Route::delete('cursos/{curso}/tareas/{tarea}', [AdminTareaController::class, 'destroy'])->name('tareas.destroy');
+
+    Route::get('categorias', [CategoriaController::class, 'index'])->name('categorias.index');
+    Route::post('categorias', [CategoriaController::class, 'store'])->name('categorias.store');
+    Route::put('categorias/{categoria}', [CategoriaController::class, 'update'])->name('categorias.update');
+    Route::delete('categorias/{categoria}', [CategoriaController::class, 'destroy'])->name('categorias.destroy');
+
+    Route::get('metodos-pago', [MetodoPagoController::class, 'index'])->name('metodos-pago.index');
+    Route::post('metodos-pago', [MetodoPagoController::class, 'store'])->name('metodos-pago.store');
+    Route::put('metodos-pago/{metodo}', [MetodoPagoController::class, 'update'])->name('metodos-pago.update');
+    Route::post('metodos-pago/{metodo}/toggle', [MetodoPagoController::class, 'toggle'])->name('metodos-pago.toggle');
+    Route::delete('metodos-pago/{metodo}', [MetodoPagoController::class, 'destroy'])->name('metodos-pago.destroy');
 
     Route::get('apariencia', [AparienciaController::class, 'editar'])->name('apariencia.editar');
     Route::put('apariencia', [AparienciaController::class, 'actualizar'])->name('apariencia.actualizar');

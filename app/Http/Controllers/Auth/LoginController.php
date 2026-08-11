@@ -38,7 +38,7 @@ class LoginController extends Controller
         }
 
         return redirect()->intended(
-            $usuario->esInstructor() ? route('admin.cursos.index') : route('publico.home')
+            $usuario->esInstructor() ? route('admin.dashboard') : route('publico.home')
         );
     }
 
