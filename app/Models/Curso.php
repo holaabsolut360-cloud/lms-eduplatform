@@ -54,6 +54,11 @@ class Curso extends Model
         return $this->hasMany(Tarea::class);
     }
 
+    public function clasesEnVivo(): HasMany
+    {
+        return $this->hasMany(ClaseEnVivo::class)->orderBy('fecha_hora');
+    }
+
     public function totalLecciones(): int
     {
         return $this->modulos->sum(fn ($m) => $m->lecciones->count());

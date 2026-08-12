@@ -70,6 +70,25 @@
             @endif
         </div>
 
+        @php($proximasClases = $curso->clasesEnVivo->filter(fn($c) => !$c->yaPaso()))
+        @if($proximasClases->isNotEmpty())
+            <div class="px-3 pb-2">
+                <div class="text-xs text-slate-500 uppercase tracking-wide mb-2">Próximas clases en vivo</div>
+                @foreach($proximasClases as $clase)
+                    <a href="{{ $clase->link_reunion }}" target="_blank"
+                       class="block bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 mb-1.5 hover:bg-red-500/15">
+                        <div class="flex items-center gap-1.5 text-xs font-medium text-red-300">
+                            <i class="ti ti-video"></i> {{ $clase->titulo }}
+                            @if($clase->estaEnVivoAhora())
+                                <span class="bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-1">EN VIVO</span>
+                            @endif
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-0.5">{{ $clase->fecha_hora->format('d/m/Y H:i') }} · {{ ucfirst(str_replace('_',' ',$clase->plataforma)) }}</div>
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
         <div class="flex-1 overflow-y-auto px-2 pb-4">
             @foreach($curso->modulos as $modulo)
                 <div class="text-xs text-slate-500 uppercase tracking-wide px-3 pt-3 pb-1">{{ $modulo->titulo }}</div>

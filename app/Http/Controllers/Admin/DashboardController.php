@@ -17,17 +17,13 @@ class DashboardController extends Controller
 
         $cursosQuery = $esAdmin ? Curso::query() : Curso::where('instructor_id', $user->id);
 
-        $ingresosMes = Orden::where('estado', 'aprobada')
-            ->whereMonth('revisado_en', now()->month)
-            ->whereYear('revisado_en', now()->year)
-            ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $user->id)))
-            ->sum('monto');
+        $ingresosMes = $this->ingresosDelMes(now()->month, now()->year, $esAdmin, $user->id);
+        $ingresosMesAnterior = $this->ingresosDelMes(now()->subMonth()->month, now()->subMonth()->year, $esAdmin, $user->id);
+        $crecimientoIngresos = $this->porcentajeCrecimiento($ingresosMesAnterior, $ingresosMes);
 
-        $alumnosNuevosMes = Matricula::where('estado', '!=', 'pendiente_pago')
-            ->whereMonth('matriculado_en', now()->month)
-            ->whereYear('matriculado_en', now()->year)
-            ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $user->id)))
-            ->count();
+        $alumnosNuevosMes = $this->alumnosNuevosDelMes(now()->month, now()->year, $esAdmin, $user->id);
+        $alumnosNuevosMesAnterior = $this->alumnosNuevosDelMes(now()->subMonth()->month, now()->subMonth()->year, $esAdmin, $user->id);
+        $crecimientoAlumnos = $this->porcentajeCrecimiento($alumnosNuevosMesAnterior, $alumnosNuevosMes);
 
         $ordenesPendientes = Orden::whereIn('estado', ['pendiente', 'en_revision'])
             ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $user->id)))
@@ -51,8 +47,36 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-            'ingresosMes', 'alumnosNuevosMes', 'ordenesPendientes',
-            'totalCursos', 'totalAlumnos', 'cursosTop', 'ultimasOrdenes'
+            'ingresosMes', 'crecimientoIngresos', 'alumnosNuevosMes', 'crecimientoAlumnos',
+            'ordenesPendientes', 'totalCursos', 'totalAlumnos', 'cursosTop', 'ultimasOrdenes'
         ));
+    }
+
+    private function ingresosDelMes(int $mes, int $anio, bool $esAdmin, int $instructorId): float
+    {
+        return (float) Orden::where('estado', 'aprobada')
+            ->whereMonth('revisado_en', $mes)
+            ->whereYear('revisado_en', $anio)
+            ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $instructorId)))
+            ->sum('monto');
+    }
+
+    private function alumnosNuevosDelMes(int $mes, int $anio, bool $esAdmin, int $instructorId): int
+    {
+        return Matricula::where('estado', '!=', 'pendiente_pago')
+            ->whereMonth('matriculado_en', $mes)
+            ->whereYear('matriculado_en', $anio)
+            ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $instructorId)))
+            ->count();
+    }
+
+    // Devuelve null si no hay dato del mes anterior para comparar (evita divisiones por cero engañosas)
+    private function porcentajeCrecimiento(float $anterior, float $actual): ?int
+    {
+        if ($anterior <= 0) {
+            return $actual > 0 ? 100 : null;
+        }
+
+        return (int) round((($actual - $anterior) / $anterior) * 100);
     }
 }

@@ -81,6 +81,19 @@ class CursoController extends Controller
         return redirect()->route('admin.cursos.index')->with('success', 'Curso eliminado.');
     }
 
+    public function alumnos(Curso $curso): View
+    {
+        $this->autorizar($curso);
+
+        $matriculas = $curso->matriculas()
+            ->where('estado', '!=', 'pendiente_pago')
+            ->with('estudiante')
+            ->orderByDesc('porcentaje_avance')
+            ->get();
+
+        return view('admin.cursos.alumnos', compact('curso', 'matriculas'));
+    }
+
     // Un instructor solo puede tocar sus propios cursos; un administrador puede tocar cualquiera.
     private function autorizar(Curso $curso): void
     {

@@ -128,6 +128,48 @@
                 </form>
             </details>
         </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 p-5">
+            <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-video"></i> Clases en vivo</h3>
+            @forelse($curso->clasesEnVivo as $clase)
+                <div class="flex items-center justify-between border-t border-slate-50 py-2 text-sm">
+                    <div>
+                        <div class="text-slate-800">{{ $clase->titulo }}</div>
+                        <div class="text-xs text-slate-400">{{ $clase->fecha_hora->format('d/m/Y H:i') }} · {{ ucfirst(str_replace('_',' ',$clase->plataforma)) }}
+                            @if($clase->yaPaso()) <span class="text-slate-400">· Finalizada</span> @endif
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ $clase->link_reunion }}" target="_blank" class="text-marca text-xs">Ver link</a>
+                        <form method="POST" action="{{ route('admin.clases-vivo.destroy', [$curso, $clase]) }}" onsubmit="return confirm('¿Eliminar esta clase en vivo?')">
+                            @csrf @method('DELETE')
+                            <button class="text-red-300 text-xs"><i class="ti ti-x"></i></button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <p class="text-xs text-slate-400">Todavía no has agendado ninguna clase en vivo.</p>
+            @endforelse
+            <details class="mt-3">
+                <summary class="text-xs text-marca cursor-pointer select-none">+ Agendar clase en vivo</summary>
+                <form method="POST" action="{{ route('admin.clases-vivo.store', $curso) }}" class="space-y-2 mt-3">
+                    @csrf
+                    <input type="text" name="titulo" placeholder="Título de la clase (ej: Sesión en vivo — Módulo 1)" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                    <div class="grid grid-cols-2 gap-2">
+                        <select name="plataforma" class="border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                            <option value="zoom">Zoom</option>
+                            <option value="google_meet">Google Meet</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                        <input type="number" name="duracion_minutos" value="60" placeholder="Duración (min)" class="border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <input type="url" name="link_reunion" placeholder="Link de la reunión (Zoom/Meet)" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                    <input type="datetime-local" name="fecha_hora" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
+                    <textarea name="notas" placeholder="Notas para el alumno (opcional)" rows="2" class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                    <button class="bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">Agendar clase</button>
+                </form>
+            </details>
+        </div>
     </div>
 
     <div class="space-y-4">
@@ -181,7 +223,10 @@
 
         <div class="bg-white rounded-2xl border border-slate-100 p-5">
             <h3 class="font-semibold text-sm text-slate-900 mb-3"><i class="ti ti-chart-bar"></i> Este curso</h3>
-            <div class="flex justify-between text-sm py-1.5 border-b border-slate-50"><span class="text-slate-500">Alumnos inscritos</span><span>{{ $curso->matriculas()->count() }}</span></div>
+            <div class="flex justify-between text-sm py-1.5 border-b border-slate-50">
+                <span class="text-slate-500">Alumnos inscritos</span>
+                <a href="{{ route('admin.cursos.alumnos', $curso) }}" class="text-marca font-medium">{{ $curso->matriculas()->count() }} · Ver progreso →</a>
+            </div>
             <div class="flex justify-between text-sm py-1.5"><span class="text-slate-500">Lecciones totales</span><span>{{ $curso->totalLecciones() }}</span></div>
         </div>
     </div>

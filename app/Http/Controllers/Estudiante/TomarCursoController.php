@@ -43,7 +43,7 @@ class TomarCursoController extends Controller
             abort(403, 'Debes completar el contenido anterior antes de continuar.');
         }
 
-        $curso->load('modulos.lecciones');
+        $curso->load('modulos.lecciones', 'clasesEnVivo', 'examenes', 'tareas');
 
         $leccionesCompletadasIds = ProgresoLeccion::where('matricula_id', $matricula->id)
             ->pluck('leccion_id')

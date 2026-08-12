@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AparienciaController;
 use App\Http\Controllers\Admin\CategoriaController;
+use App\Http\Controllers\Admin\ClaseEnVivoController;
 use App\Http\Controllers\Admin\CursoController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExamenController as AdminExamenController;
@@ -90,6 +91,11 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
 
     Route::resource('cursos', CursoController::class);
     Route::post('cursos/{curso}/publicar', [CursoController::class, 'publicar'])->name('cursos.publicar');
+    Route::get('cursos/{curso}/alumnos', [CursoController::class, 'alumnos'])->name('cursos.alumnos');
+
+    Route::post('cursos/{curso}/clases-vivo', [ClaseEnVivoController::class, 'store'])->name('clases-vivo.store');
+    Route::put('cursos/{curso}/clases-vivo/{clase}', [ClaseEnVivoController::class, 'update'])->name('clases-vivo.update');
+    Route::delete('cursos/{curso}/clases-vivo/{clase}', [ClaseEnVivoController::class, 'destroy'])->name('clases-vivo.destroy');
 
     Route::post('cursos/{curso}/modulos', [ModuloController::class, 'store'])->name('modulos.store');
     Route::put('cursos/{curso}/modulos/{modulo}', [ModuloController::class, 'update'])->name('modulos.update');

@@ -10,14 +10,28 @@
             <i class="ti ti-cash text-marca"></i>
         </div>
         <div class="text-xl font-bold text-slate-900">S/ {{ number_format($ingresosMes, 2) }}</div>
-        <div class="text-xs text-slate-500 mt-1">Ingresos este mes</div>
+        <div class="flex items-center justify-between mt-1">
+            <div class="text-xs text-slate-500">Ingresos este mes</div>
+            @if($crecimientoIngresos !== null)
+                <span class="text-xs font-semibold flex items-center gap-0.5 {{ $crecimientoIngresos >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                    <i class="ti {{ $crecimientoIngresos >= 0 ? 'ti-arrow-up-right' : 'ti-arrow-down-right' }}"></i> {{ abs($crecimientoIngresos) }}%
+                </span>
+            @endif
+        </div>
     </div>
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <div class="w-9 h-9 rounded-lg bg-green-50 flex items-center justify-center mb-3">
             <i class="ti ti-user-plus text-green-600"></i>
         </div>
         <div class="text-xl font-bold text-slate-900">{{ $alumnosNuevosMes }}</div>
-        <div class="text-xs text-slate-500 mt-1">Alumnos nuevos este mes</div>
+        <div class="flex items-center justify-between mt-1">
+            <div class="text-xs text-slate-500">Alumnos nuevos este mes</div>
+            @if($crecimientoAlumnos !== null)
+                <span class="text-xs font-semibold flex items-center gap-0.5 {{ $crecimientoAlumnos >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                    <i class="ti {{ $crecimientoAlumnos >= 0 ? 'ti-arrow-up-right' : 'ti-arrow-down-right' }}"></i> {{ abs($crecimientoAlumnos) }}%
+                </span>
+            @endif
+        </div>
     </div>
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center mb-3">
