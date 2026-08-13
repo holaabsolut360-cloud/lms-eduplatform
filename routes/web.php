@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AgendaController;
 use App\Http\Controllers\Admin\AparienciaController;
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ClaseEnVivoController;
@@ -88,6 +89,7 @@ Route::middleware(['auth'])->prefix('mis-cursos')->name('estudiante.')->group(fu
 Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
 
     Route::resource('cursos', CursoController::class);
     Route::post('cursos/{curso}/publicar', [CursoController::class, 'publicar'])->name('cursos.publicar');

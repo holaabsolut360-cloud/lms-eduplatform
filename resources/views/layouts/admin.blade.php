@@ -32,6 +32,9 @@
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.dashboard') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
                 <i class="ti ti-layout-dashboard"></i> Dashboard
             </a>
+            <a href="{{ route('admin.agenda.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.agenda.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                <i class="ti ti-calendar-event"></i> Agenda
+            </a>
 
             <div class="text-[10px] tracking-wide text-slate-500 uppercase px-5 pt-3 pb-1">Enseñanza</div>
             <a href="{{ route('admin.cursos.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.cursos.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">

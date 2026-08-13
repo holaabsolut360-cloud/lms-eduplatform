@@ -46,9 +46,16 @@ class DashboardController extends Controller
             ->limit(6)
             ->get();
 
+        $proximasClases = \App\Models\ClaseEnVivo::with('curso')
+            ->when(!$esAdmin, fn ($q) => $q->whereHas('curso', fn ($c) => $c->where('instructor_id', $user->id)))
+            ->where('fecha_hora', '>=', now()->subHours(2)) // incluye las que están corriendo ahora mismo
+            ->orderBy('fecha_hora')
+            ->limit(4)
+            ->get();
+
         return view('admin.dashboard', compact(
             'ingresosMes', 'crecimientoIngresos', 'alumnosNuevosMes', 'crecimientoAlumnos',
-            'ordenesPendientes', 'totalCursos', 'totalAlumnos', 'cursosTop', 'ultimasOrdenes'
+            'ordenesPendientes', 'totalCursos', 'totalAlumnos', 'cursosTop', 'ultimasOrdenes', 'proximasClases'
         ));
     }
 

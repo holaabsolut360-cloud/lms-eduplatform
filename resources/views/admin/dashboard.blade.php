@@ -53,6 +53,24 @@
 </div>
 
 <div class="grid lg:grid-cols-2 gap-6">
+    @if($proximasClases->isNotEmpty())
+    <div class="bg-white rounded-2xl border border-slate-100 p-5 lg:col-span-2">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold text-sm text-slate-900"><i class="ti ti-calendar-event text-red-500"></i> Próximas clases en vivo</h3>
+            <a href="{{ route('admin.agenda.index') }}" class="text-xs text-marca font-medium">Ver agenda completa</a>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            @foreach($proximasClases as $clase)
+                <div class="border border-slate-100 rounded-xl p-3">
+                    <div class="text-xs font-semibold text-red-500 mb-1">{{ $clase->fecha_hora->format('d/m H:i') }}</div>
+                    <div class="text-sm text-slate-800 truncate">{{ $clase->titulo }}</div>
+                    <div class="text-xs text-slate-400 truncate">{{ $clase->curso->titulo }}</div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <div class="bg-white rounded-2xl border border-slate-100 p-5">
         <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-trophy"></i> Cursos más vendidos</h3>
         @forelse($cursosTop as $curso)
