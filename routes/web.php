@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AgendaController;
+use App\Http\Controllers\Admin\AlumnoController;
 use App\Http\Controllers\Admin\AparienciaController;
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ClaseEnVivoController;
@@ -90,6 +91,11 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
+
+    Route::get('alumnos', [AlumnoController::class, 'index'])->name('alumnos.index');
+    Route::get('alumnos/{alumno}', [AlumnoController::class, 'show'])->name('alumnos.show');
+    Route::post('alumnos/{alumno}/notas', [AlumnoController::class, 'storeNota'])->name('alumnos.notas.store');
+    Route::delete('alumnos/{alumno}/notas/{nota}', [AlumnoController::class, 'destroyNota'])->name('alumnos.notas.destroy');
 
     Route::resource('cursos', CursoController::class);
     Route::post('cursos/{curso}/publicar', [CursoController::class, 'publicar'])->name('cursos.publicar');

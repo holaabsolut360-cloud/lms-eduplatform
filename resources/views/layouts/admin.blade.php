@@ -54,6 +54,9 @@
 
             @if(auth()->user()->esAdministrador())
                 <div class="text-[10px] tracking-wide text-slate-500 uppercase px-5 pt-3 pb-1">Plataforma</div>
+                <a href="{{ route('admin.alumnos.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.alumnos.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
+                    <i class="ti ti-user-search"></i> Alumnos
+                </a>
                 <a href="{{ route('admin.metodos-pago.index') }}" class="flex items-center gap-2 px-5 py-2 {{ request()->routeIs('admin.metodos-pago.*') ? 'bg-marca/15 border-l-2 border-marca text-white' : 'text-slate-300 hover:bg-white/5' }}">
                     <i class="ti ti-credit-card"></i> Métodos de pago
                 </a>
