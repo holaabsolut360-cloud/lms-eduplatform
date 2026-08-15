@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\LeccionController;
 use App\Http\Controllers\Admin\MetodoPagoController;
 use App\Http\Controllers\Admin\ModuloController;
 use App\Http\Controllers\Admin\OrdenController;
+use App\Http\Controllers\Admin\PerfilController;
 use App\Http\Controllers\Admin\PreguntaController;
 use App\Http\Controllers\Admin\TareaController as AdminTareaController;
 use App\Http\Controllers\Admin\UsuarioController;
@@ -91,6 +92,10 @@ Route::middleware(['auth', 'can:administrar-plataforma'])->prefix('admin')->name
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('agenda', [AgendaController::class, 'index'])->name('agenda.index');
+
+    Route::get('perfil', [PerfilController::class, 'editar'])->name('perfil.editar');
+    Route::put('perfil', [PerfilController::class, 'actualizar'])->name('perfil.actualizar');
+    Route::put('perfil/contrasena', [PerfilController::class, 'actualizarContrasena'])->name('perfil.contrasena');
 
     Route::get('alumnos', [AlumnoController::class, 'index'])->name('alumnos.index');
     Route::get('alumnos/{alumno}', [AlumnoController::class, 'show'])->name('alumnos.show');

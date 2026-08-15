@@ -67,7 +67,9 @@
         </nav>
 
         <div class="p-4 border-t border-white/5">
-            <div class="text-xs text-slate-400 mb-2">{{ auth()->user()->nombre }} · {{ ucfirst(auth()->user()->rol) }}</div>
+            <a href="{{ route('admin.perfil.editar') }}" class="text-xs text-slate-400 hover:text-white mb-2 flex items-center gap-1.5">
+                <i class="ti ti-user-circle"></i> {{ auth()->user()->nombre }} · {{ ucfirst(auth()->user()->rol) }}
+            </a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button class="text-xs text-slate-400 hover:text-white flex items-center gap-1"><i class="ti ti-logout"></i> Cerrar sesión</button>
