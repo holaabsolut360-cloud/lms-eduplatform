@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Estudiante\CertificadoController;
+use App\Http\Controllers\Estudiante\CuentaController;
 use App\Http\Controllers\Estudiante\ExamenController as EstudianteExamenController;
 use App\Http\Controllers\Estudiante\TareaController as EstudianteTareaController;
 use App\Http\Controllers\Estudiante\TomarCursoController;
@@ -60,6 +61,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/cursos/{curso:slug}/comprar', [CheckoutController::class, 'mostrar'])->name('publico.checkout');
     Route::post('/cursos/{curso:slug}/comprar', [CheckoutController::class, 'confirmar'])->name('publico.checkout.confirmar');
     Route::get('/ordenes/{orden}/gracias', [CheckoutController::class, 'gracias'])->name('publico.checkout.gracias');
+});
+
+Route::middleware('auth')->prefix('mi-cuenta')->name('estudiante.cuenta.')->group(function () {
+    Route::get('/', [CuentaController::class, 'index'])->name('index');
+    Route::get('/perfil', [CuentaController::class, 'perfil'])->name('perfil');
+    Route::put('/perfil', [CuentaController::class, 'actualizar'])->name('actualizar');
+    Route::put('/perfil/contrasena', [CuentaController::class, 'actualizarContrasena'])->name('contrasena');
 });
 
 /*

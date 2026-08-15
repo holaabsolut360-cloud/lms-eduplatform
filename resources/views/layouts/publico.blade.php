@@ -41,6 +41,8 @@
                 @auth
                     @if(auth()->user()->esInstructor())
                         <a href="{{ route('admin.cursos.index') }}" class="text-sm text-slate-600 hover:text-slate-900">Panel admin</a>
+                    @else
+                        <a href="{{ route('estudiante.cuenta.index') }}" class="text-sm text-slate-600 hover:text-slate-900">Mi cuenta</a>
                     @endif
                     <span class="text-sm text-slate-600 hidden sm:inline">{{ auth()->user()->nombre }}</span>
                     <form method="POST" action="{{ route('logout') }}">
