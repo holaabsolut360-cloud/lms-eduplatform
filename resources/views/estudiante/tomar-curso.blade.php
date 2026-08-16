@@ -17,7 +17,7 @@
         <div class="flex-1 bg-gradient-to-br from-[#1a1c33] to-[#0d0e1a] flex items-center justify-center relative">
             @if($leccionActual->tipo === 'video' && $leccionActual->youtubeId())
                 <iframe class="w-full h-full absolute inset-0"
-                        src="https://www.youtube-nocookie.com/embed/{{ $leccionActual->youtubeId() }}?rel=0"
+                        src="https://www.youtube-nocookie.com/embed/{{ $leccionActual->youtubeId() }}?rel=0&modestbranding=1&iv_load_policy=3&disablekb=1&fs=0"
                         title="{{ $leccionActual->titulo }}" frameborder="0" allowfullscreen></iframe>
             @elseif($leccionActual->tipo === 'texto')
                 <div class="max-w-2xl w-full p-8 text-slate-200 leading-relaxed overflow-y-auto max-h-[70vh]">
