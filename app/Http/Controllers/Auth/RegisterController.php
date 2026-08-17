@@ -38,6 +38,8 @@ class RegisterController extends Controller
 
         Auth::login($usuario);
 
+        \Illuminate\Support\Facades\Mail::to($usuario)->send(new \App\Mail\BienvenidaMail($usuario));
+
         return redirect()->route('publico.home')->with('success', '¡Bienvenido! Tu cuenta fue creada.');
     }
 }

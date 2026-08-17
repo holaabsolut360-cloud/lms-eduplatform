@@ -26,6 +26,8 @@ class OrdenController extends Controller
 
         $orden->aprobar(auth()->user());
 
+        \Illuminate\Support\Facades\Mail::to($orden->estudiante)->send(new \App\Mail\OrdenAprobadaMail($orden));
+
         return back()->with('success', "Orden {$orden->codigo} aprobada. La matrícula del alumno ya está activa.");
     }
 
