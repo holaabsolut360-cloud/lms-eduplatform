@@ -6,9 +6,18 @@
 <section class="max-w-4xl mx-auto px-6 py-12">
 
     <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 class="text-xl font-bold text-slate-900">Hola, {{ auth()->user()->nombre }}</h1>
-            <p class="text-sm text-slate-500">Aquí ves tus cursos, pagos, calificaciones y certificados.</p>
+        <div class="flex items-center gap-3">
+            @if(auth()->user()->avatar_url)
+                <img src="{{ asset('storage/' . auth()->user()->avatar_url) }}" class="w-12 h-12 rounded-full object-cover">
+            @else
+                <div class="w-12 h-12 rounded-full bg-marca flex items-center justify-center text-white font-semibold">
+                    {{ strtoupper(substr(auth()->user()->nombre, 0, 1)) }}
+                </div>
+            @endif
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">Hola, {{ auth()->user()->nombre }}</h1>
+                <p class="text-sm text-slate-500">Aquí ves tus cursos, pagos, calificaciones y certificados.</p>
+            </div>
         </div>
         <a href="{{ route('estudiante.cuenta.perfil') }}" class="text-sm text-marca font-medium border border-marca/30 rounded-full px-4 py-2 flex items-center gap-1.5">
             <i class="ti ti-settings"></i> Editar perfil

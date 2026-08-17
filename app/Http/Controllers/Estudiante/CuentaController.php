@@ -46,7 +46,13 @@ class CuentaController extends Controller
             'nombre' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email,' . $usuario->id],
             'telefono' => ['nullable', 'string', 'max:20'],
+            'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $data['avatar_url'] = $request->file('avatar')->store('avatares', 'public');
+        }
+        unset($data['avatar']);
 
         $usuario->update($data);
 

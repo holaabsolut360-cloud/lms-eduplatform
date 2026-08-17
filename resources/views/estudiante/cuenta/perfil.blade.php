@@ -9,8 +9,21 @@
 
     <div class="bg-white border border-slate-100 rounded-2xl p-5 mb-6">
         <h3 class="font-semibold text-sm text-slate-900 mb-4"><i class="ti ti-user"></i> Datos personales</h3>
-        <form method="POST" action="{{ route('estudiante.cuenta.actualizar') }}" class="space-y-3">
+        <form method="POST" action="{{ route('estudiante.cuenta.actualizar') }}" enctype="multipart/form-data" class="space-y-3">
             @csrf @method('PUT')
+            <div class="flex items-center gap-3 mb-2">
+                @if(auth()->user()->avatar_url)
+                    <img src="{{ asset('storage/' . auth()->user()->avatar_url) }}" class="w-14 h-14 rounded-full object-cover">
+                @else
+                    <div class="w-14 h-14 rounded-full bg-marca flex items-center justify-center text-white font-semibold text-lg">
+                        {{ strtoupper(substr(auth()->user()->nombre, 0, 1)) }}
+                    </div>
+                @endif
+                <div>
+                    <label class="text-xs text-slate-500 block mb-1">Foto de perfil</label>
+                    <input type="file" name="avatar" accept="image/*" class="text-xs">
+                </div>
+            </div>
             <div>
                 <label class="text-xs text-slate-500">Nombre</label>
                 <input type="text" name="nombre" value="{{ old('nombre', auth()->user()->nombre) }}" required class="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm mt-1">
