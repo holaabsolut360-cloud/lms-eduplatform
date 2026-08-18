@@ -31,7 +31,7 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 
 **✅ Proyecto ejecutable de punta a punta.** Esquema de datos, controladores, rutas y vistas Blade completos.
 
-**Esquema de datos:** 15 migraciones (categorías, cursos, módulos, lecciones, matrículas, progreso, apariencia, exámenes, preguntas, opciones, intentos, tareas, entregas, métodos de pago, órdenes, certificados, usuarios) + 17 modelos Eloquent.
+**Esquema de datos:** 22 migraciones (categorías, cursos, módulos, lecciones, matrículas, progreso, apariencia, exámenes, preguntas, opciones, intentos, tareas, entregas, métodos de pago, órdenes, certificados, usuarios, video/contacto de login, clases en vivo, notas internas del alumno) + modelos Eloquent.
 
 **Backend:** controladores públicos (catálogo, checkout), del estudiante (tomar curso con bloqueo secuencial real, exámenes con calificación automática, tareas) y del panel admin (cursos/módulos/lecciones, exámenes/preguntas, tareas/entregas, pagos, apariencia, usuarios). Autenticación nativa de Laravel (sin Breeze), con 3 roles y Gates de acceso.
 
@@ -47,6 +47,16 @@ Plataforma de e-learning a medida (estilo Coursera/Udemy), para uso **exclusivo 
 - **Requiere el paquete `barryvdh/laravel-dompdf`**, que no viene en el esqueleto base — instálalo con `composer require barryvdh/laravel-dompdf` antes de probar la descarga de PDF
 
 **Login con video ✅:** pantalla de ingreso rediseñada con layout de dos columnas — video en bucle a la izquierda (editable desde Apariencia, con fallback a degradado de marca si no hay video configurado) y formulario a la derecha con datos de contacto y botón flotante de WhatsApp.
+
+**Panel admin ✅:** Dashboard con KPIs e indicadores de crecimiento, gestión de categorías y métodos de pago, aislamiento de cursos por instructor en todos los controladores anidados, reporte de progreso de alumnos por curso.
+
+**Clases en vivo ✅:** integración simple con Zoom/Meet (enlace + horario), agenda general consolidada por día con todos los cursos/instructores, y widget de próximas clases en el Dashboard.
+
+**Ficha del alumno ✅:** listado global de estudiantes, vista detallada por alumno con cursos matriculados y progreso, certificados obtenidos, historial de pagos, y notas internas del staff.
+
+**Cuenta del estudiante ✅:** "Mi cuenta" con resumen de cursos/certificados/calificaciones/pagos, edición de perfil propio (nombre, correo, teléfono, contraseña con verificación de la actual) y subida de foto de perfil con vista previa.
+
+**Notificaciones por correo ✅:** email de bienvenida al registrarse y confirmación automática al aprobar un pago.
 
 ## Notas de configuración importantes
 
