@@ -1,0 +1,196 @@
+diff --git a/app/Console/Commands/EnviarRecordatoriosInactividad.php b/app/Console/Commands/EnviarRecordatoriosInactividad.php
+new file mode 100644
+index 0000000..1c51ac8
+--- /dev/null
++++ b/app/Console/Commands/EnviarRecordatoriosInactividad.php
+@@ -0,0 +1,63 @@
++<?php
++
++namespace App\Console\Commands;
++
++use App\Mail\RecordatorioInactividadMail;
++use App\Models\Matricula;
++use Illuminate\Console\Command;
++use Illuminate\Support\Facades\Mail;
++use Illuminate\Support\Carbon;
++
++class EnviarRecordatoriosInactividad extends Command
++{
++    protected $signature = 'alumnos:enviar-recordatorios-inactividad {--dias=7 : Días sin actividad para considerar inactivo}';
++
++    protected $description = 'Envía un correo a los alumnos que no han avanzado en un curso en X días, sin repetir el aviso antes de otros X días';
++
++    public function handle(): int
++    {
++        $dias = (int) $this->option('dias');
++        $limite = now()->subDays($dias);
++
++        $matriculas = Matricula::where('estado', '!=', 'pendiente_pago')
++            ->whereNull('completado_en')
++            ->with(['curso', 'estudiante', 'progreso'])
++            ->get()
++            ->filter(function (Matricula $matricula) use ($limite, $dias) {
++                $ultimaActividad = $matricula->ultimaActividad();
++
++                if (! $ultimaActividad || $ultimaActividad->gt($limite)) {
++                    return false;
++                }
++
++                // No repetir el recordatorio antes de que pasen $dias desde el último enviado
++                if ($matricula->ultimo_recordatorio_inactividad_en
++                    && $matricula->ultimo_recordatorio_inactividad_en->gt(now()->subDays($dias))) {
++                    return false;
++                }
++
++                return true;
++            });
++
++        if ($matriculas->isEmpty()) {
++            $this->info('No hay alumnos inactivos pendientes de recordatorio.');
++
++            return self::SUCCESS;
++        }
++
++        foreach ($matriculas as $matricula) {
++            if (! $matricula->estudiante) {
++                continue;
++            }
++
++            Mail::to($matricula->estudiante->email)
++                ->send(new RecordatorioInactividadMail($matricula, $matricula->estudiante));
++
++            $matricula->update(['ultimo_recordatorio_inactividad_en' => now()]);
++
++            $this->info("Recordatorio enviado a {$matricula->estudiante->email} — curso \"{$matricula->curso->titulo}\".");
++        }
++
++        return self::SUCCESS;
++    }
++}
+diff --git a/app/Mail/RecordatorioInactividadMail.php b/app/Mail/RecordatorioInactividadMail.php
+new file mode 100644
+index 0000000..5137659
+--- /dev/null
++++ b/app/Mail/RecordatorioInactividadMail.php
+@@ -0,0 +1,24 @@
++<?php
++
++namespace App\Mail;
++
++use App\Models\Matricula;
++use App\Models\User;
++use Illuminate\Bus\Queueable;
++use Illuminate\Mail\Mailable;
++use Illuminate\Queue\SerializesModels;
++
++class RecordatorioInactividadMail extends Mailable
++{
++    use Queueable, SerializesModels;
++
++    public function __construct(public Matricula $matricula, public User $estudiante)
++    {
++    }
++
++    public function build(): self
++    {
++        return $this->subject('Te extrañamos en "' . $this->matricula->curso->titulo . '"')
++            ->view('emails.recordatorio-inactividad');
++    }
++}
+diff --git a/app/Models/Matricula.php b/app/Models/Matricula.php
+index c63a7a4..8fd6cce 100644
+--- a/app/Models/Matricula.php
++++ b/app/Models/Matricula.php
+@@ -11,14 +11,24 @@ class Matricula extends Model
+     protected $fillable = [
+         'curso_id', 'estudiante_id', 'estado', 'monto_pagado', 'moneda',
+         'bloqueo_secuencial_override', 'porcentaje_avance', 'completado_en', 'matriculado_en',
++        'ultimo_recordatorio_inactividad_en',
+     ];
+ 
+     protected $casts = [
+         'bloqueo_secuencial_override' => 'boolean',
+         'completado_en' => 'datetime',
+         'matriculado_en' => 'datetime',
++        'ultimo_recordatorio_inactividad_en' => 'datetime',
+     ];
+ 
++    // Fecha de la última actividad registrada: última lección completada, o fecha de matrícula si aún no completa ninguna
++    public function ultimaActividad(): \Illuminate\Support\Carbon
++    {
++        $ultimaLeccion = $this->progreso()->max('completada_en');
++
++        return $ultimaLeccion ? \Illuminate\Support\Carbon::parse($ultimaLeccion) : $this->matriculado_en;
++    }
++
+     public function curso(): BelongsTo
+     {
+         return $this->belongsTo(Curso::class);
+diff --git a/database/migrations/2026_08_19_000002_add_ultimo_recordatorio_inactividad_en_to_matriculas.php b/database/migrations/2026_08_19_000002_add_ultimo_recordatorio_inactividad_en_to_matriculas.php
+new file mode 100644
+index 0000000..f5a0303
+--- /dev/null
++++ b/database/migrations/2026_08_19_000002_add_ultimo_recordatorio_inactividad_en_to_matriculas.php
+@@ -0,0 +1,22 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    public function up(): void
++    {
++        Schema::table('matriculas', function (Blueprint $table) {
++            $table->timestamp('ultimo_recordatorio_inactividad_en')->nullable()->after('completado_en');
++        });
++    }
++
++    public function down(): void
++    {
++        Schema::table('matriculas', function (Blueprint $table) {
++            $table->dropColumn('ultimo_recordatorio_inactividad_en');
++        });
++    }
++};
+diff --git a/resources/views/emails/recordatorio-inactividad.blade.php b/resources/views/emails/recordatorio-inactividad.blade.php
+new file mode 100644
+index 0000000..d703609
+--- /dev/null
++++ b/resources/views/emails/recordatorio-inactividad.blade.php
+@@ -0,0 +1,25 @@
++<!DOCTYPE html>
++<html>
++<body style="margin:0;padding:0;background:#f5f6fa;font-family:Arial,sans-serif;">
++<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
++<tr><td align="center">
++<table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
++<tr><td style="background:#6c5ce7;padding:24px;text-align:center;">
++<span style="color:#fff;font-size:18px;font-weight:bold;">{{ config('app.name') }}</span>
++</td></tr>
++<tr><td style="padding:32px;">
++<h2 style="color:#1a1c2e;margin:0 0 12px;">¡Hola, {{ $estudiante->nombre }}!</h2>
++<p style="color:#4a4d68;font-size:14px;line-height:1.6;">
++Notamos que no has avanzado en <strong>{{ $matricula->curso->titulo }}</strong> en los últimos días.
++Vas por <strong>{{ $matricula->porcentaje_avance }}%</strong> del curso — ¡solo falta un poco para seguir sumando!
++</p>
++<p style="text-align:center;margin:28px 0;">
++<a href="{{ route('estudiante.curso.index', $matricula->curso->slug) }}" style="background:#6c5ce7;color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:bold;display:inline-block;">Retomar el curso</a>
++</p>
++<p style="color:#8a8fa8;font-size:12px;">Si ya no deseas continuar el curso, no hay problema, puedes ignorar este correo.</p>
++</td></tr>
++</table>
++</td></tr>
++</table>
++</body>
++</html>
+diff --git a/routes/console.php b/routes/console.php
+index 0fe6938..b1699e5 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -9,3 +9,4 @@
+ })->purpose('Display an inspiring quote');
+ 
+ Schedule::command('clases:enviar-recordatorios')->everyMinute();
++Schedule::command('alumnos:enviar-recordatorios-inactividad')->dailyAt('09:00');

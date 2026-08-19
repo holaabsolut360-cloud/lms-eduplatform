@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('clases:enviar-recordatorios')->everyMinute();
+Schedule::command('alumnos:enviar-recordatorios-inactividad')->dailyAt('09:00');
