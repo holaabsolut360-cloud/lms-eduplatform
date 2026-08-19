@@ -11,11 +11,12 @@ class ClaseEnVivo extends Model
 
     protected $fillable = [
         'curso_id', 'modulo_id', 'titulo', 'plataforma', 'link_reunion',
-        'fecha_hora', 'duracion_minutos', 'notas',
+        'fecha_hora', 'duracion_minutos', 'notas', 'recordatorio_enviado',
     ];
 
     protected $casts = [
         'fecha_hora' => 'datetime',
+        'recordatorio_enviado' => 'boolean',
     ];
 
     public function curso(): BelongsTo

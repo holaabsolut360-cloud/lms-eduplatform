@@ -1,0 +1,180 @@
+diff --git a/app/Console/Commands/EnviarRecordatoriosClases.php b/app/Console/Commands/EnviarRecordatoriosClases.php
+new file mode 100644
+index 0000000..195d421
+--- /dev/null
++++ b/app/Console/Commands/EnviarRecordatoriosClases.php
+@@ -0,0 +1,49 @@
++<?php
++
++namespace App\Console\Commands;
++
++use App\Mail\RecordatorioClaseMail;
++use App\Models\ClaseEnVivo;
++use App\Models\Matricula;
++use Illuminate\Console\Command;
++use Illuminate\Support\Facades\Mail;
++
++class EnviarRecordatoriosClases extends Command
++{
++    protected $signature = 'clases:enviar-recordatorios';
++
++    protected $description = 'Envía un correo recordatorio a los alumnos matriculados de las clases en vivo que empiezan dentro de la próxima hora';
++
++    public function handle(): int
++    {
++        $clases = ClaseEnVivo::where('recordatorio_enviado', false)
++            ->whereBetween('fecha_hora', [now(), now()->addHour()])
++            ->with('curso')
++            ->get();
++
++        if ($clases->isEmpty()) {
++            $this->info('No hay clases próximas pendientes de recordatorio.');
++
++            return self::SUCCESS;
++        }
++
++        foreach ($clases as $clase) {
++            $estudiantes = Matricula::where('curso_id', $clase->curso_id)
++                ->where('estado', '!=', 'pendiente_pago')
++                ->with('estudiante')
++                ->get()
++                ->pluck('estudiante')
++                ->filter();
++
++            foreach ($estudiantes as $estudiante) {
++                Mail::to($estudiante->email)->send(new RecordatorioClaseMail($clase, $estudiante));
++            }
++
++            $clase->update(['recordatorio_enviado' => true]);
++
++            $this->info("Recordatorio enviado para \"{$clase->titulo}\" a {$estudiantes->count()} alumno(s).");
++        }
++
++        return self::SUCCESS;
++    }
++}
+diff --git a/app/Mail/RecordatorioClaseMail.php b/app/Mail/RecordatorioClaseMail.php
+new file mode 100644
+index 0000000..cf1ca87
+--- /dev/null
++++ b/app/Mail/RecordatorioClaseMail.php
+@@ -0,0 +1,24 @@
++<?php
++
++namespace App\Mail;
++
++use App\Models\ClaseEnVivo;
++use App\Models\User;
++use Illuminate\Bus\Queueable;
++use Illuminate\Mail\Mailable;
++use Illuminate\Queue\SerializesModels;
++
++class RecordatorioClaseMail extends Mailable
++{
++    use Queueable, SerializesModels;
++
++    public function __construct(public ClaseEnVivo $clase, public User $estudiante)
++    {
++    }
++
++    public function build(): self
++    {
++        return $this->subject('Tu clase "' . $this->clase->titulo . '" empieza pronto')
++            ->view('emails.recordatorio-clase');
++    }
++}
+diff --git a/app/Models/ClaseEnVivo.php b/app/Models/ClaseEnVivo.php
+index 5bf9533..4ca6a09 100644
+--- a/app/Models/ClaseEnVivo.php
++++ b/app/Models/ClaseEnVivo.php
+@@ -11,11 +11,12 @@ class ClaseEnVivo extends Model
+ 
+     protected $fillable = [
+         'curso_id', 'modulo_id', 'titulo', 'plataforma', 'link_reunion',
+-        'fecha_hora', 'duracion_minutos', 'notas',
++        'fecha_hora', 'duracion_minutos', 'notas', 'recordatorio_enviado',
+     ];
+ 
+     protected $casts = [
+         'fecha_hora' => 'datetime',
++        'recordatorio_enviado' => 'boolean',
+     ];
+ 
+     public function curso(): BelongsTo
+diff --git a/database/migrations/2026_08_19_000001_add_recordatorio_enviado_to_clases_en_vivo.php b/database/migrations/2026_08_19_000001_add_recordatorio_enviado_to_clases_en_vivo.php
+new file mode 100644
+index 0000000..c0ed8c7
+--- /dev/null
++++ b/database/migrations/2026_08_19_000001_add_recordatorio_enviado_to_clases_en_vivo.php
+@@ -0,0 +1,22 @@
++<?php
++
++use Illuminate\Database\Migrations\Migration;
++use Illuminate\Database\Schema\Blueprint;
++use Illuminate\Support\Facades\Schema;
++
++return new class extends Migration
++{
++    public function up(): void
++    {
++        Schema::table('clases_en_vivo', function (Blueprint $table) {
++            $table->boolean('recordatorio_enviado')->default(false)->after('notas');
++        });
++    }
++
++    public function down(): void
++    {
++        Schema::table('clases_en_vivo', function (Blueprint $table) {
++            $table->dropColumn('recordatorio_enviado');
++        });
++    }
++};
+diff --git a/resources/views/emails/recordatorio-clase.blade.php b/resources/views/emails/recordatorio-clase.blade.php
+new file mode 100644
+index 0000000..c6b2adf
+--- /dev/null
++++ b/resources/views/emails/recordatorio-clase.blade.php
+@@ -0,0 +1,28 @@
++<!DOCTYPE html>
++<html>
++<body style="margin:0;padding:0;background:#f5f6fa;font-family:Arial,sans-serif;">
++<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
++<tr><td align="center">
++<table width="480" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;">
++<tr><td style="background:#6c5ce7;padding:24px;text-align:center;">
++<span style="color:#fff;font-size:18px;font-weight:bold;">{{ config('app.name') }}</span>
++</td></tr>
++<tr><td style="padding:32px;">
++<h2 style="color:#1a1c2e;margin:0 0 12px;">¡Hola, {{ $estudiante->nombre }}!</h2>
++<p style="color:#4a4d68;font-size:14px;line-height:1.6;">
++Tu clase en vivo <strong>{{ $clase->titulo }}</strong> del curso <strong>{{ $clase->curso->titulo }}</strong>
++empieza a las <strong>{{ $clase->fecha_hora->format('h:i A') }}</strong> de hoy.
++</p>
++<p style="color:#4a4d68;font-size:14px;line-height:1.6;">
++Plataforma: {{ $clase->plataforma }}
++</p>
++<p style="text-align:center;margin:28px 0;">
++<a href="{{ $clase->link_reunion }}" style="background:#6c5ce7;color:#fff;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:14px;font-weight:bold;display:inline-block;">Unirme a la clase</a>
++</p>
++<p style="color:#8a8fa8;font-size:12px;">Guarda este correo para acceder al enlace cuando sea la hora.</p>
++</td></tr>
++</table>
++</td></tr>
++</table>
++</body>
++</html>
+diff --git a/routes/console.php b/routes/console.php
+index 3c9adf1..0fe6938 100644
+--- a/routes/console.php
++++ b/routes/console.php
+@@ -2,7 +2,10 @@
+ 
+ use Illuminate\Foundation\Inspiring;
+ use Illuminate\Support\Facades\Artisan;
++use Illuminate\Support\Facades\Schedule;
+ 
+ Artisan::command('inspire', function () {
+     $this->comment(Inspiring::quote());
+ })->purpose('Display an inspiring quote');
++
++Schedule::command('clases:enviar-recordatorios')->everyMinute();
