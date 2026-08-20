@@ -28,6 +28,32 @@
                 {{ ucfirst(str_replace('_',' ',$orden->estado)) }}
             </span>
 
+            <button type="button" onclick="document.getElementById('historial-{{ $orden->id }}').showModal()" class="text-xs text-slate-500 border border-slate-200 px-3 py-2 rounded-lg">Historial</button>
+
+            <dialog id="historial-{{ $orden->id }}" class="rounded-2xl p-6 max-w-sm w-full">
+                <h3 class="font-semibold text-sm mb-4">Historial de {{ $orden->codigo }}</h3>
+                <div class="space-y-3 mb-4">
+                    @foreach($orden->auditoria as $evento)
+                        <div class="flex gap-3 text-xs">
+                            <div class="w-1.5 h-1.5 rounded-full bg-marca mt-1.5 shrink-0"></div>
+                            <div>
+                                <div class="font-medium text-slate-700">
+                                    {{ $evento->etiqueta() }}
+                                    @if($evento->admin) — {{ $evento->admin->nombre }} @endif
+                                </div>
+                                <div class="text-slate-400">{{ $evento->creado_en->format('d/m/Y H:i') }}</div>
+                                @if($evento->motivo)
+                                    <div class="text-slate-500 italic mt-0.5">"{{ $evento->motivo }}"</div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="document.getElementById('historial-{{ $orden->id }}').close()" class="text-sm text-slate-500">Cerrar</button>
+                </div>
+            </dialog>
+
             @if($orden->estado === 'en_revision' || $orden->estado === 'pendiente')
                 <form method="POST" action="{{ route('admin.pagos.aprobar', $orden) }}">
                     @csrf

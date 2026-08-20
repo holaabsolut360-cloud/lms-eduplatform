@@ -26,6 +26,13 @@ class Orden extends Model
         });
 
         static::created(function (Orden $orden) {
+            OrdenAuditoria::create([
+                'orden_id' => $orden->id,
+                'admin_id' => null,
+                'accion' => 'creada',
+                'creado_en' => now(),
+            ]);
+
             if ($orden->estado === 'en_revision') {
                 User::where('rol', 'administrador')->get()->each(
                     fn (User $admin) => \Illuminate\Support\Facades\Mail::to($admin->email)
@@ -67,6 +74,13 @@ class Orden extends Model
             'revisado_en' => now(),
         ]);
 
+        OrdenAuditoria::create([
+            'orden_id' => $this->id,
+            'admin_id' => $admin->id,
+            'accion' => 'aprobada',
+            'creado_en' => now(),
+        ]);
+
         return Matricula::updateOrCreate(
             ['curso_id' => $this->curso_id, 'estudiante_id' => $this->estudiante_id],
             [
@@ -86,5 +100,18 @@ class Orden extends Model
             'revisado_por' => $admin->id,
             'revisado_en' => now(),
         ]);
+
+        OrdenAuditoria::create([
+            'orden_id' => $this->id,
+            'admin_id' => $admin->id,
+            'accion' => 'rechazada',
+            'motivo' => $motivo,
+            'creado_en' => now(),
+        ]);
+    }
+
+    public function auditoria(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OrdenAuditoria::class)->orderBy('creado_en');
     }
 }

@@ -12,7 +12,7 @@ class OrdenController extends Controller
 {
     public function index(Request $request): View
     {
-        $ordenes = Orden::with('curso', 'estudiante', 'metodoPago')
+        $ordenes = Orden::with('curso', 'estudiante', 'metodoPago', 'auditoria.admin')
             ->when($request->filled('estado'), fn ($q) => $q->where('estado', $request->estado))
             ->latest()
             ->paginate(20);
