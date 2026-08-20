@@ -25,6 +25,7 @@ use App\Http\Controllers\Estudiante\CuentaController;
 use App\Http\Controllers\Estudiante\ExamenController as EstudianteExamenController;
 use App\Http\Controllers\Estudiante\TareaController as EstudianteTareaController;
 use App\Http\Controllers\Estudiante\TomarCursoController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\VerificarCertificadoController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::get('/', [CatalogoController::class, 'home'])->name('publico.home');
 Route::get('/cursos', [CatalogoController::class, 'buscar'])->name('publico.catalogo');
 Route::get('/cursos/{curso:slug}', [CatalogoController::class, 'detalle'])->name('publico.curso.detalle');
 Route::get('/verificar-certificado/{codigo?}', [VerificarCertificadoController::class, 'mostrar'])->name('publico.certificado.verificar');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('publico.sitemap');
 
 /*
 |--------------------------------------------------------------------------
