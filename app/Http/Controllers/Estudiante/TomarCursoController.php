@@ -8,6 +8,7 @@ use App\Models\Curso;
 use App\Models\Leccion;
 use App\Models\Matricula;
 use App\Models\ProgresoLeccion;
+use App\Services\GamificacionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -66,6 +67,10 @@ class TomarCursoController extends Controller
             ['matricula_id' => $matricula->id, 'leccion_id' => $leccion->id],
             ['completada_en' => now()]
         );
+
+        $gamificacion = app(GamificacionService::class);
+        $gamificacion->registrarActividad($matricula->estudiante);
+        $gamificacion->revisarPrimerModulo($matricula, $leccion);
 
         $this->actualizarAvance($matricula);
 
@@ -134,6 +139,7 @@ class TomarCursoController extends Controller
 
         if ($porcentaje >= 100) {
             Certificado::emitirParaMatricula($matricula);
+            app(GamificacionService::class)->otorgarCursoCompletado($matricula);
         }
     }
 

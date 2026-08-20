@@ -36,6 +36,11 @@ class User extends Authenticatable
         return $this->hasMany(Matricula::class, 'estudiante_id');
     }
 
+    public function insignias(): HasMany
+    {
+        return $this->hasMany(\App\Models\AlumnoInsignia::class, 'estudiante_id');
+    }
+
     public function esAdministrador(): bool
     {
         return $this->rol === 'administrador';

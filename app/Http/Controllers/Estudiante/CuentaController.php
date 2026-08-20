@@ -27,9 +27,10 @@ class CuentaController extends Controller
             ->with('examen.curso')->latest()->get();
         $entregasCalificadas = EntregaTarea::whereHas('matricula', fn ($q) => $q->where('estudiante_id', $usuario->id))
             ->where('estado', 'calificada')->with('tarea.curso')->latest()->get();
+        $insignias = $usuario->insignias()->latest('obtenida_en')->get();
 
         return view('estudiante.cuenta.index', compact(
-            'matriculas', 'certificados', 'ordenes', 'resultadosExamenes', 'entregasCalificadas'
+            'matriculas', 'certificados', 'ordenes', 'resultadosExamenes', 'entregasCalificadas', 'insignias'
         ));
     }
 

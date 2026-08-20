@@ -7,6 +7,7 @@ use App\Models\Curso;
 use App\Models\Examen;
 use App\Models\IntentoExamen;
 use App\Models\Matricula;
+use App\Services\GamificacionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -56,6 +57,10 @@ class ExamenController extends Controller
         ]);
 
         $intento->calificar();
+
+        if ($intento->aprobado) {
+            app(GamificacionService::class)->otorgarPrimerExamenAprobado($matricula->estudiante);
+        }
 
         return redirect()
             ->route('estudiante.examen.resultado', [$curso, $examen, $intento])

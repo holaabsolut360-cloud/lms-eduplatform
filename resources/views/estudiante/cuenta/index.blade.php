@@ -39,6 +39,30 @@
         </div>
     </div>
 
+    <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-2xl p-5 mb-8 flex items-center gap-4">
+        <div class="text-3xl">🔥</div>
+        <div>
+            <div class="text-lg font-bold text-slate-900">
+                {{ auth()->user()->racha_actual }} {{ Str::plural('día', auth()->user()->racha_actual) }} seguido{{ auth()->user()->racha_actual === 1 ? '' : 's' }}
+            </div>
+            <p class="text-xs text-slate-500">Tu racha más larga: {{ auth()->user()->racha_maxima }} días. Completa una lección hoy para mantenerla.</p>
+        </div>
+    </div>
+
+    @if($insignias->isNotEmpty())
+    <div class="mb-8">
+        <h2 class="text-sm font-semibold text-slate-700 mb-3">Tus insignias</h2>
+        <div class="flex flex-wrap gap-3">
+            @foreach($insignias as $insignia)
+                <div class="bg-white border border-slate-100 rounded-2xl px-4 py-3 flex items-center gap-2" title="{{ $insignia->obtenida_en->format('d/m/Y') }}">
+                    <span class="text-xl">{{ $insignia->icono() }}</span>
+                    <span class="text-xs font-medium text-slate-700">{{ $insignia->nombre() }}</span>
+                </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <div class="space-y-6">
 
         <div class="bg-white border border-slate-100 rounded-2xl p-5">
