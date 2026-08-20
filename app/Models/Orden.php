@@ -24,6 +24,15 @@ class Orden extends Model
         static::creating(function (Orden $orden) {
             $orden->codigo ??= 'ORD-' . now()->format('Y') . '-' . str_pad((string) (static::max('id') + 1), 6, '0', STR_PAD_LEFT);
         });
+
+        static::created(function (Orden $orden) {
+            if ($orden->estado === 'en_revision') {
+                User::where('rol', 'administrador')->get()->each(
+                    fn (User $admin) => \Illuminate\Support\Facades\Mail::to($admin->email)
+                        ->send(new \App\Mail\NuevoPagoPendienteMail($orden))
+                );
+            }
+        });
     }
 
     public function curso(): BelongsTo
